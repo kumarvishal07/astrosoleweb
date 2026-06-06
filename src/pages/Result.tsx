@@ -10,7 +10,6 @@ import {
   Bell,
   ChevronRight,
   Menu,
-  X,
   Compass
 } from 'lucide-react';
 import { generateDetailedReading } from '../data/podomancy';
@@ -155,7 +154,7 @@ const CancerSymbol = () => (
 export default function Result() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { name = 'Seeker', language: stateLanguage = 'en' } = location.state || {};
+  const { name = 'User', language: stateLanguage = 'en' } = location.state || {};
   
   const [reading, setReading] = useState<ReturnType<typeof generateDetailedReading> | null>(null);
   const [language, setLanguage] = useState<'en' | 'hi'>(stateLanguage);
@@ -163,8 +162,90 @@ export default function Result() {
   // Tab control: 'overview' | 'left' | 'right'
   const [activeTab, setActiveTab] = useState<'overview' | 'left' | 'right'>('overview');
   
-  // Menu Modal State
-  const [activeModal, setActiveModal] = useState<'destiny' | 'strengths' | 'compatibility' | 'remedies' | null>(null);
+  // Metric expansion state
+  const [expandedMetrics, setExpandedMetrics] = useState<Record<string, boolean>>({
+    destiny: false,
+    strengths: false,
+    compatibility: false,
+    remedies: false
+  });
+
+  const toggleMetric = (key: string) => {
+    setExpandedMetrics(prev => ({
+      ...prev,
+      [key]: !prev[key]
+    }));
+  };
+
+  // Paywall states
+  const [isUnlocked, setIsUnlocked] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [isPaying, setIsPaying] = useState(false);
+
+  const printReportDetails = {
+    en: {
+      title: "Detailed Astrological Metrics",
+      destinyTitle: "✦ Life Path & Destiny",
+      destinyText: "Your foot outline coordinates align closely with Life Path Number 7, indicating a highly spiritual, introspective, and analytical path. You are naturally drawn to mystical sciences, wisdom, and deep life questions.",
+      destinyHighlightsTitle: "Destiny Highlights:",
+      destinyHighlights: [
+        "You find peace in solitary reflection.",
+        "You are highly intuitive—your gut feelings rarely lead you astray.",
+        "Your destiny calls you to teach or share deep wisdom with the world."
+      ],
+      strengthsTitle: "✦ Strengths & Challenges",
+      strengthsLabel: "Core Strengths:",
+      strengthsText: "Your practical sole structure gives you great resilience. You have a balanced mind and can stay calm in chaotic situations. Loyalty is your biggest asset.",
+      challengesLabel: "Cosmic Challenges:",
+      challengesText: "You sometimes struggle to trust others, leading to isolation. Remember that vulnerability is not weakness. Focus on opening your heart chakra.",
+      compatibilityTitle: "✦ Love & Compatibility",
+      compatibilityText: `Your foot structure is naturally aligned with certain elemental forces. Here is your cosmic compatibility index:`,
+      compatibilityIndices: [
+        { label: "Love & Romance:", value: "88% (Highly Compatible with Water Foot)" },
+        { label: "Friendship:", value: "92% (Aligned with Earth & Air elements)" },
+        { label: "Business Partnerships:", value: "80% (Best with stable Earth elements)" }
+      ],
+      remediesTitle: "✦ Remedies & Guidance",
+      remediesText: "To balance your planetary elements and remove obstacles, perform these customized remedies:",
+      remedies: [
+        { name: "Grounding Practice", desc: "Walk barefoot on green grass for 10 minutes every morning to align your Earth element." },
+        { name: "Gemstone Suggestion", desc: "Wearing a yellow sapphire or carrying tiger's eye quartz will enhance focus and ward off negative planetary transits." },
+        { name: "Cosmic Mantra", desc: "Chant \"Om Namah Shivaya\" 108 times daily to harmonize your inner energy nodes." }
+      ]
+    },
+    hi: {
+      title: "विस्तृत ज्योतिषीय विश्लेषण (Astrological Metrics)",
+      destinyTitle: "✦ जीवन पथ और नियति (Life Path & Destiny)",
+      destinyText: "आपके पैर की रूपरेखा के समन्वय जीवन पथ संख्या 7 के साथ निकटता से संरेखित होते हैं, जो एक अत्यधिक आध्यात्मिक, आत्मनिरीक्षण और विश्लेषणात्मक जीवन पथ का संकेत देते हैं। आप स्वाभाविक रूप से रहस्यमय विज्ञान, ज्ञान और गहरे जीवन के प्रश्नों की ओर आकर्षित हैं।",
+      destinyHighlightsTitle: "नियति की मुख्य विशेषताएं (Destiny Highlights):",
+      destinyHighlights: [
+        "आप एकांत चिंतन में शांति पाते हैं।",
+        "आप अत्यधिक सहज हैं—यानी आपकी आंतरिक भावनाएं (gut feelings) शायद ही कभी गलत साबित होती हैं।",
+        "आपकी नियति आपको दुनिया के साथ गहरा ज्ञान साझा करने या सिखाने के लिए बुलाती है।"
+      ],
+      strengthsTitle: "✦ ताकत और चुनौतियां (Strengths & Challenges)",
+      strengthsLabel: "मुख्य ताकत (Core Strengths):",
+      strengthsText: "आपके पास एक संतुलित दिमाग है और आप अराजक परिस्थितियों में भी शांत रह सकते हैं। वफादारी आपकी सबसे बड़ी पूंजी है।",
+      challengesLabel: "ब्रह्मांडीय चुनौतियां (Cosmic Challenges):",
+      challengesText: "आप कभी-कभी दूसरों पर भरोसा करने में संघर्ष करते हैं, जिससे अलगाव की भावना पैदा हो सकती है। याद रखें कि अपनी कोमल भावनाएं जताना (vulnerability) कमजोरी नहीं है। अपने हृदय चक्र (heart chakra) को जागृत करने पर ध्यान दें।",
+      compatibilityTitle: "✦ प्रेम और अनुकूलता (Love Compatibility)",
+      compatibilityText: `आपका पैर ढांचा स्वाभाविक रूप से कुछ तत्वों की शक्तियों के साथ संरेखित है। यहाँ आपका ब्रह्मांडीय अनुकूलता सूचकांक (compatibility index) है:`,
+      compatibilityIndices: [
+        { label: "प्रेम और रोमांस (Love & Romance):", value: "88% (जल पैर के साथ अत्यधिक अनुकूल)" },
+        { label: "मित्रता (Friendship):", value: "92% (पृथ्वी और वायु तत्वों के साथ संरेखित)" },
+        { label: "व्यावसायिक साझेदारी (Business Partnerships):", value: "80% (स्थिर पृथ्वी तत्वों के साथ सर्वोत्तम)" }
+      ],
+      remediesTitle: "✦ उपाय और मार्गदर्शन (Remedies & Guidance)",
+      remediesText: "अपने ग्रहीय तत्वों को संतुलित करने और बाधाओं को दूर करने के लिए, इन अनुकूलित उपायों का पालन करें:",
+      remedies: [
+        { name: "अर्थिंग / ग्राउंडिंग अभ्यास (Grounding Practice)", desc: "अपने पृथ्वी तत्व को संतुलित करने के लिए हर सुबह 10 मिनट हरी घास पर नंगे पैर चलें।" },
+        { name: "रत्न सुझाव (Gemstone Suggestion)", desc: "पुखराज (yellow sapphire) धारण करना या टाइगर आई क्वार्ट्ज पास रखना ध्यान को बढ़ाएगा और नकारात्मक ग्रहीय प्रभावों को दूर करेगा।" },
+        { name: "ब्रह्मांडीय मंत्र (Cosmic Mantra)", desc: "अपने आंतरिक ऊर्जा नोड्स को अनुकूल बनाने के लिए प्रतिदिन 108 बार \"ओम नमः शिवाय\" का जाप करें।" }
+      ]
+    }
+  };
+
+  const pData = printReportDetails[language];
 
   useEffect(() => {
     // Generate reading once on mount
@@ -202,6 +283,8 @@ export default function Result() {
       `• Foot Shape: ${reading.detected.shape[langLabel]}`,
       `• Sole Lines: ${reading.detected.lines[langLabel]}`,
       `• Foot Size: ${reading.detected.size[langLabel]}`,
+      `• Toe Alignment: ${reading.detected.toe[langLabel]}`,
+      `• Arch Profile: ${reading.detected.arch[langLabel]}`,
       divider,
       `✨ PERSONALITY ANALYSIS:`,
       reading.predictions.personality[langLabel],
@@ -274,29 +357,61 @@ export default function Result() {
   const score = getScoreFromName(name);
   const scoreText = score >= 90 ? "Excellent" : score >= 85 ? "Very Good" : "Good";
 
+  // Dynamic Foot Type details
+  const isEarth = reading.detected.shape.en.includes("Earth") || reading.detected.shape.en.includes("Roman");
+  const isWater = reading.detected.shape.en.includes("Water") || reading.detected.shape.en.includes("Egyptian");
+  const isFire = reading.detected.shape.en.includes("Fire") || reading.detected.shape.en.includes("Greek");
+  const isAir = reading.detected.shape.en.includes("Air") || reading.detected.shape.en.includes("Square");
+
   // Elements percentages
   const elements = [
-    { name: "Earth", val: 60, color: "var(--accent)", symbol: <EarthSymbol /> },
-    { name: "Water", val: 20, color: "#2B7DE9", symbol: <WaterSymbol /> },
-    { name: "Fire", val: 10, color: "#FF6B6B", symbol: <FireSymbol /> },
-    { name: "Air", val: 10, color: "#EAEAEA", symbol: <AirSymbol /> }
+    { name: language === 'hi' ? 'पृथ्वी (Earth)' : 'Earth', val: isEarth ? 60 : 15, color: "var(--accent)", symbol: <EarthSymbol /> },
+    { name: language === 'hi' ? 'जल (Water)' : 'Water', val: isWater ? 60 : 15, color: "#2B7DE9", symbol: <WaterSymbol /> },
+    { name: language === 'hi' ? 'अग्नि (Fire)' : 'Fire', val: isFire ? 60 : 15, color: "#FF6B6B", symbol: <FireSymbol /> },
+    { name: language === 'hi' ? 'वायु (Air)' : 'Air', val: isAir ? 60 : 10, color: "#EAEAEA", symbol: <AirSymbol /> }
   ];
+  // Sort elements so highest is first
+  elements.sort((a, b) => b.val - a.val);
 
-  // Dynamic Foot Type details
-  const isEarth = reading.detected.shape.en.includes("Square") || reading.detected.shape.en.includes("Roman");
-  const isWater = reading.detected.shape.en.includes("Egyptian");
-
-  const footTypeTitle = isEarth ? "Earth Foot" : isWater ? "Water Foot" : "Air Foot";
+  const footTypeTitle = isEarth ? "Earth Foot" : isWater ? "Water Foot" : isFire ? "Fire Foot" : "Air Foot";
   const footTypeDesc = isEarth 
-    ? "Grounded, stable and practical. You are dependable and value security."
+    ? (language === 'hi' ? "व्यावहारिक, स्थिर और भरोसेमंद। आप सुरक्षा और सच्चाई को महत्व देते हैं।" : "Grounded, stable and practical. You are dependable and value security.")
     : isWater
-    ? "Mysterious, fluid and highly intuitive. You are creative and emotional."
-    : "Idealistic, communicative and free. You value intellect and travel.";
+    ? (language === 'hi' ? "रहस्यमयी, संवेदनशील और अत्यंत सहज। आप रचनात्मक और भावनात्मक हैं।" : "Mysterious, fluid and highly intuitive. You are creative and emotional.")
+    : isFire
+    ? (language === 'hi' ? "साहसी, ऊर्जावान और करिश्माई। आप स्वभाव से एक नेता हैं।" : "Adventurous, energetic and charismatic. You are a natural leader.")
+    : (language === 'hi' ? "दार्शनिक, मिलनसार और स्वतंत्र। आप बौद्धिक विचारों को महत्व देते हैं।" : "Idealistic, communicative and free. You value intellect and ideas.");
 
-  const footTypeSymbol = isEarth ? <EarthSymbol /> : isWater ? <WaterSymbol /> : <AirSymbol />;
+  const footTypeSymbol = isEarth ? <EarthSymbol /> : isWater ? <WaterSymbol /> : isFire ? <FireSymbol /> : <AirSymbol />;
 
   // Dynamic Highlight tags
-  const highlights = ["Balanced Mind", "Strong Intuition", "Loyal", "Hardworking", "Practical", "Independent"];
+  const highlights = [];
+  if (isEarth) {
+    highlights.push(language === 'hi' ? "स्थिर मन" : "Grounded Mind", language === 'hi' ? "भरोसेमंद" : "Dependable");
+  }
+  if (isWater) {
+    highlights.push(language === 'hi' ? "तीव्र अंतर्ज्ञान" : "High Intuition", language === 'hi' ? "रचनात्मक" : "Creative");
+  }
+  if (isFire) {
+    highlights.push(language === 'hi' ? "साहसी" : "Adventurous", language === 'hi' ? "करिश्माई" : "Charismatic");
+  }
+  if (isAir) {
+    highlights.push(language === 'hi' ? "तार्किक" : "Logical", language === 'hi' ? "मुक्त विचार" : "Open-Minded");
+  }
+  highlights.push(language === 'hi' ? "स्वतंत्र" : "Independent", language === 'hi' ? "वफादार" : "Loyal");
+
+  // Element Badge details
+  const shapeNameEn = reading.detected.shape.en;
+  let elementBadge = { text: 'Earth Element 🪨', color: '#E0C097', bg: 'rgba(224, 192, 151, 0.15)' };
+  if (shapeNameEn.includes('Water') || shapeNameEn.includes('Egyptian')) {
+    elementBadge = { text: language === 'hi' ? 'जल तत्व 💧' : 'Water Element 💧', color: '#2B7DE9', bg: 'rgba(43, 125, 233, 0.15)' };
+  } else if (shapeNameEn.includes('Fire') || shapeNameEn.includes('Greek')) {
+    elementBadge = { text: language === 'hi' ? 'अग्नि तत्व 🔥' : 'Fire Element 🔥', color: '#FF6B6B', bg: 'rgba(255, 107, 107, 0.15)' };
+  } else if (shapeNameEn.includes('Air') || shapeNameEn.includes('Square')) {
+    elementBadge = { text: language === 'hi' ? 'वायु तत्व 💨' : 'Air Element 💨', color: '#EAEAEA', bg: 'rgba(234, 234, 234, 0.15)' };
+  } else {
+    elementBadge = { text: language === 'hi' ? 'पृथ्वी तत्व 🪨' : 'Earth Element 🪨', color: 'var(--accent)', bg: 'rgba(224, 192, 151, 0.15)' };
+  }
 
   // Translations
   const textDict = {
@@ -326,8 +441,81 @@ export default function Result() {
         </div>
       </header>
 
-      {/* Tab Selectors */}
-      <div className="tabs-selector">
+      {!isUnlocked ? (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', maxWidth: '600px', margin: '0 auto', padding: '10px' }}>
+          {/* Overall Details Paragraph */}
+          <div className="glass-card" style={{ padding: '24px', textAlign: 'center', margin: 0 }}>
+            <Sparkles color="var(--accent)" size={32} style={{ margin: '0 auto 12px' }} className="animate-pulse" />
+            <h2 style={{ fontFamily: 'Cinzel', fontSize: '20px', color: 'var(--accent)', marginBottom: '16px' }}>
+              {language === 'hi' ? "पैर का विश्लेषण (Foot Analysis Summary)" : "Foot Analysis Summary"}
+            </h2>
+            <p style={{ fontSize: '14.5px', color: 'var(--text-primary)', lineHeight: '1.6', margin: 0, textAlign: 'justify' }}>
+              {language === 'hi'
+                ? `प्रिय ${name === 'User' ? 'उपयोगकर्ता' : name}, एस्ट्रोसोल एआई टेलीमेट्री ने आपके पैर के तलवे की रूपरेखा का सफलतापूर्वक मानचित्रण कर लिया है। आपके पैर का ढांचा ${reading?.detected?.shape?.hi || 'पृथ्वी तत्व'} के संरेखण में है, जो व्यावहारिक स्वभाव, महान सहनशीलता और भावनात्मक स्थिरता को दर्शाता है। आपके तलवे की रेखाओं के सूक्ष्म विश्लेषण से पता चलता है कि आपके जीवन पथ की दिशा मजबूत आध्यात्मिक विकास, छिपे हुए रहस्यों के प्रति रुचि और उत्कृष्ट बौद्धिक क्षमता की ओर संकेत करती है।`
+                : `Dear ${name === 'User' ? 'User' : name}, the AstroSole AI telemetry has successfully mapped your sole contour coordinates. Your foot shape aligns with the ${reading?.detected?.shape?.en || 'Earth Foot'} structure, reflecting a highly grounded nature, remarkable resilience, and emotional stability. The coordinate readings show strong cosmic alignment with Destiny Node 7, pointing toward unique spiritual growth, natural intuitive insights, and an analytical future path.`
+              }
+            </p>
+          </div>
+
+          {/* Paywall Card */}
+          <div className="glass-card destiny-glow-card" style={{ 
+            padding: '30px 24px', 
+            textAlign: 'center', 
+            margin: 0,
+            border: '2px solid rgba(224, 192, 151, 0.95)',
+            background: 'linear-gradient(135deg, rgba(30, 10, 50, 0.85) 0%, rgba(15, 5, 29, 0.95) 100%)',
+          }}>
+            <h3 style={{ fontFamily: 'Cinzel', fontSize: '18px', color: '#FFFFFF', marginBottom: '8px' }}>
+              {language === 'hi' ? "पूर्ण ज्योतिषीय रिपोर्ट अनलॉक करें" : "Unlock Full Astrological Report"}
+            </h3>
+            <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '20px', lineHeight: '1.4' }}>
+              {language === 'hi'
+                ? "सभी प्रमुख खंडों को प्रकट करें: जीवन पथ और नियति, शक्तियाँ और चुनौतियाँ, प्रेम अनुकूलता और ग्रहों के उपाय।"
+                : "Reveal all core sections: Life Path & Destiny details, Strengths & Cosmic Challenges, Love Compatibility Index, and Personalized Planetary Remedies."}
+            </p>
+
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'baseline', gap: '6px', marginBottom: '24px' }}>
+              <span style={{ fontSize: '32px', fontWeight: 'bold', color: 'var(--accent)' }}>₹49</span>
+              <span style={{ fontSize: '14px', color: 'var(--text-secondary)', textDecoration: 'line-through' }}>₹499</span>
+              <span style={{ fontSize: '12px', color: 'yellowgreen', fontWeight: 'bold' }}>(90% OFF)</span>
+            </div>
+
+            <button 
+              className="btn" 
+              onClick={() => setShowPaymentModal(true)}
+              style={{ 
+                width: '100%', 
+                maxWidth: '300px', 
+                padding: '14px 0', 
+                fontSize: '14px', 
+                fontWeight: 'bold', 
+                textTransform: 'uppercase',
+                background: 'linear-gradient(135deg, #FFE3C0 0%, #F5A623 100%)',
+                color: '#0F051D',
+                boxShadow: '0 0 25px rgba(245, 166, 35, 0.75)',
+                margin: '0 auto',
+                display: 'block'
+              }}
+            >
+              {language === 'hi' ? "पूर्ण रिपोर्ट अनलॉक करें" : "Unlock Complete Report"}
+            </button>
+          </div>
+
+          {/* Complete Pilgrimage Button */}
+          <div style={{ display: 'flex', justifyContent: 'center', margin: '20px 0 16px' }}>
+            <button 
+              className="btn btn-secondary" 
+              onClick={() => navigate('/')} 
+              style={{ width: '100%', maxWidth: '280px', padding: '14px 0' }}
+            >
+              {t.doneBtn}
+            </button>
+          </div>
+        </div>
+      ) : (
+        <>
+          {/* Tab Selectors */}
+          <div className="tabs-selector">
         <button 
           className={`tab-btn ${activeTab === 'overview' ? 'active' : ''}`}
           onClick={() => setActiveTab('overview')}
@@ -381,7 +569,9 @@ export default function Result() {
                 <div>
                   <span style={{ fontSize: '12px', color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '1px' }}>Foot Type</span>
                   <h3 style={{ fontFamily: 'Cinzel', fontSize: '20px', color: '#FFFFFF', margin: '4px 0 8px' }}>
-                    {language === 'hi' ? (isEarth ? "पृथ्वी पैर (Earth)" : "जल पैर (Water)") : footTypeTitle}
+                    {language === 'hi'
+                      ? (isEarth ? "पृथ्वी पैर (Earth)" : isWater ? "जल पैर (Water)" : isFire ? "अग्नि पैर (Fire)" : "वायु पैर (Air)")
+                      : footTypeTitle}
                   </h3>
                   <p style={{ fontSize: '13.5px', color: 'var(--text-secondary)', lineHeight: '1.5', maxWidth: '380px' }}>
                     {footTypeDesc}
@@ -390,6 +580,42 @@ export default function Result() {
                 <div>
                   {footTypeSymbol}
                 </div>
+              </div>
+            </div>
+
+            {/* Toe Reading Insights */}
+            <div className="glass-card" style={{ margin: 0, padding: '24px', position: 'relative' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <div>
+                  <span style={{ fontSize: '12px', color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                    {language === 'hi' ? "उंगली पठन अंतर्दृष्टि" : "Toe Reading Insights"}
+                  </span>
+                  <h3 style={{ fontFamily: 'Cinzel', fontSize: '18px', color: '#FFFFFF', margin: '4px 0 8px' }}>
+                    {reading.detected.toe[language]}
+                  </h3>
+                  <p style={{ fontSize: '13.5px', color: 'var(--text-secondary)', lineHeight: '1.5', maxWidth: '380px', margin: 0 }}>
+                    {reading.predictions.toeInsight[language]}
+                  </p>
+                </div>
+                <div style={{ fontSize: '32px', filter: 'drop-shadow(0 0 8px var(--accent))' }}>👣</div>
+              </div>
+            </div>
+
+            {/* Arch & Balance Profile */}
+            <div className="glass-card" style={{ margin: 0, padding: '24px', position: 'relative' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <div>
+                  <span style={{ fontSize: '12px', color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                    {language === 'hi' ? "मेहराब और संतुलन विश्लेषण" : "Arch & Balance Profile"}
+                  </span>
+                  <h3 style={{ fontFamily: 'Cinzel', fontSize: '18px', color: '#FFFFFF', margin: '4px 0 8px' }}>
+                    {reading.detected.arch[language]}
+                  </h3>
+                  <p style={{ fontSize: '13.5px', color: 'var(--text-secondary)', lineHeight: '1.5', maxWidth: '380px', margin: 0 }}>
+                    {reading.predictions.archInsight[language]}
+                  </p>
+                </div>
+                <div style={{ fontSize: '32px', filter: 'drop-shadow(0 0 8px var(--accent))' }}>⚖️</div>
               </div>
             </div>
 
@@ -462,39 +688,190 @@ export default function Result() {
 
             {/* Action Menu List Card (Moved here to align with tablet mockup) */}
             <div className="glass-card" style={{ margin: 0, padding: '20px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', flexWrap: 'wrap', gap: '8px' }}>
                 <span style={{ fontSize: '13px', color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '1px' }}>Astrological Metrics</span>
-                <span style={{ fontSize: '11px', color: 'var(--accent)', cursor: 'pointer', opacity: 0.8 }} onClick={() => navigate('/')}>View All</span>
+                {elementBadge && (
+                  <span style={{ 
+                    fontSize: '11px', 
+                    fontWeight: 'bold',
+                    color: elementBadge.color, 
+                    backgroundColor: elementBadge.bg, 
+                    padding: '3px 10px', 
+                    borderRadius: '20px',
+                    border: `1px solid ${elementBadge.color}40`,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '4px'
+                  }}>
+                    {elementBadge.text}
+                  </span>
+                )}
               </div>
               
               <div className="menu-list-container" style={{ display: 'flex', flexDirection: 'column', gap: '8px', border: 'none', background: 'transparent', padding: 0 }}>
-                <div className="menu-item-row" onClick={() => setActiveModal('destiny')} style={{ margin: 0 }}>
-                  <span className="menu-item-left">
-                    <Sparkles color="var(--accent)" size={16} />
-                    Life Path & Destiny
-                  </span>
-                  <ChevronRight color="var(--accent)" size={16} />
+                {/* 1. Life Path & Destiny */}
+                <div>
+                  <div 
+                    className="menu-item-row" 
+                    onClick={() => toggleMetric('destiny')} 
+                    style={{ margin: 0, cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+                  >
+                    <span className="menu-item-left">
+                      <Sparkles color="var(--accent)" size={16} />
+                      {language === 'hi' ? 'जीवन पथ और नियति (Life Path & Destiny)' : 'Life Path & Destiny'}
+                    </span>
+                    <ChevronRight 
+                      className="screen-only"
+                      color="var(--accent)" 
+                      size={16} 
+                      style={{ 
+                        transform: expandedMetrics.destiny ? 'rotate(90deg)' : 'none', 
+                        transition: 'transform 0.2s ease' 
+                      }} 
+                    />
+                  </div>
+                  <div 
+                    className={`metric-content-wrapper ${expandedMetrics.destiny ? 'expanded' : ''}`}
+                    style={{ borderBottom: '1px solid rgba(224,192,151,0.1)' }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', backgroundColor: 'rgba(122, 75, 148, 0.15)', padding: '10px', borderRadius: '8px', marginBottom: '12px', marginTop: '10px' }}>
+                      <span style={{ fontSize: '24px', color: 'var(--accent)', fontFamily: 'Cinzel' }}>7</span>
+                      <div>
+                        <h4 style={{ color: '#FFFFFF', fontSize: '13px', margin: 0 }}>Life Path Number: 7 (The Seeker)</h4>
+                        <span style={{ fontSize: '10.5px', color: 'var(--text-secondary)' }}>{language === 'hi' ? 'आप सत्य के गहरे विचारक और खोजक हैं।' : 'You are a deep thinker and searcher of truth.'}</span>
+                      </div>
+                    </div>
+                    <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.5', margin: '0 0 10px' }}>
+                      {pData.destinyText}
+                    </p>
+                    <h5 style={{ color: 'var(--accent)', fontSize: '13px', margin: '10px 0 4px', fontWeight: 'bold' }}>{pData.destinyHighlightsTitle}</h5>
+                    <ul style={{ fontSize: '12.5px', color: 'var(--text-secondary)', lineHeight: '1.4', margin: '0 0 10px', paddingLeft: '16px' }}>
+                      {pData.destinyHighlights.map((hl, idx) => (
+                        <li key={idx} style={{ color: 'var(--text-secondary)' }}>{hl}</li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
-                <div className="menu-item-row" onClick={() => setActiveModal('strengths')} style={{ margin: 0 }}>
-                  <span className="menu-item-left">
-                    <Activity color="var(--accent)" size={16} />
-                    Strengths & Challenges
-                  </span>
-                  <ChevronRight color="var(--accent)" size={16} />
+
+                {/* 2. Strengths & Challenges */}
+                <div>
+                  <div 
+                    className="menu-item-row" 
+                    onClick={() => toggleMetric('strengths')} 
+                    style={{ margin: 0, cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+                  >
+                    <span className="menu-item-left">
+                      <Activity color="var(--accent)" size={16} />
+                      {language === 'hi' ? 'ताकत और चुनौतियां (Strengths & Challenges)' : 'Strengths & Challenges'}
+                    </span>
+                    <ChevronRight 
+                      className="screen-only"
+                      color="var(--accent)" 
+                      size={16} 
+                      style={{ 
+                        transform: expandedMetrics.strengths ? 'rotate(90deg)' : 'none', 
+                        transition: 'transform 0.2s ease' 
+                      }} 
+                    />
+                  </div>
+                  <div 
+                    className={`metric-content-wrapper ${expandedMetrics.strengths ? 'expanded' : ''}`}
+                    style={{ borderBottom: '1px solid rgba(224,192,151,0.1)' }}
+                  >
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '10px', paddingBottom: '10px' }}>
+                      <div>
+                        <h5 style={{ color: 'var(--success)', fontSize: '13px', margin: '0 0 4px', fontWeight: 'bold' }}>{pData.strengthsLabel}</h5>
+                        <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.4', margin: 0 }}>
+                          {pData.strengthsText}
+                        </p>
+                      </div>
+                      <div>
+                        <h5 style={{ color: 'var(--danger)', fontSize: '13px', margin: '0 0 4px', fontWeight: 'bold' }}>{pData.challengesLabel}</h5>
+                        <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.4', margin: 0 }}>
+                          {pData.challengesText}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div className="menu-item-row" onClick={() => setActiveModal('compatibility')} style={{ margin: 0 }}>
-                  <span className="menu-item-left">
-                    <Heart color="var(--accent)" size={16} />
-                    Compatibility
-                  </span>
-                  <ChevronRight color="var(--accent)" size={16} />
+
+                {/* 3. Compatibility */}
+                <div>
+                  <div 
+                    className="menu-item-row" 
+                    onClick={() => toggleMetric('compatibility')} 
+                    style={{ margin: 0, cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+                  >
+                    <span className="menu-item-left">
+                      <Heart color="var(--accent)" size={16} />
+                      {language === 'hi' ? 'प्रेम और अनुकूलता (Compatibility)' : 'Compatibility'}
+                    </span>
+                    <ChevronRight 
+                      className="screen-only"
+                      color="var(--accent)" 
+                      size={16} 
+                      style={{ 
+                        transform: expandedMetrics.compatibility ? 'rotate(90deg)' : 'none', 
+                        transition: 'transform 0.2s ease' 
+                      }} 
+                    />
+                  </div>
+                  <div 
+                    className={`metric-content-wrapper ${expandedMetrics.compatibility ? 'expanded' : ''}`}
+                    style={{ borderBottom: '1px solid rgba(224,192,151,0.1)' }}
+                  >
+                    <div style={{ marginTop: '10px', paddingBottom: '10px' }}>
+                      <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.5', margin: '0 0 10px' }}>
+                        {pData.compatibilityText}
+                      </p>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
+                        {pData.compatibilityIndices.map((item, idx) => (
+                          <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '6px' }}>
+                            <span style={{ color: '#FFFFFF', fontSize: '12.5px' }}>{item.label}</span>
+                            <span style={{ color: 'var(--accent)', fontWeight: 'bold', fontSize: '12.5px', textAlign: 'right' }}>{item.value}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div className="menu-item-row" onClick={() => setActiveModal('remedies')} style={{ margin: 0 }}>
-                  <span className="menu-item-left">
-                    <Compass color="var(--accent)" size={16} />
-                    Remedies & Guidance
-                  </span>
-                  <ChevronRight color="var(--accent)" size={16} />
+
+                {/* 4. Remedies & Guidance */}
+                <div>
+                  <div 
+                    className="menu-item-row" 
+                    onClick={() => toggleMetric('remedies')} 
+                    style={{ margin: 0, cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+                  >
+                    <span className="menu-item-left">
+                      <Compass color="var(--accent)" size={16} />
+                      {language === 'hi' ? 'उपाय और मार्गदर्शन (Remedies & Guidance)' : 'Remedies & Guidance'}
+                    </span>
+                    <ChevronRight 
+                      className="screen-only"
+                      color="var(--accent)" 
+                      size={16} 
+                      style={{ 
+                        transform: expandedMetrics.remedies ? 'rotate(90deg)' : 'none', 
+                        transition: 'transform 0.2s ease' 
+                      }} 
+                    />
+                  </div>
+                  <div 
+                    className={`metric-content-wrapper ${expandedMetrics.remedies ? 'expanded' : ''}`}
+                  >
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '10px', paddingBottom: '10px' }}>
+                      <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.5', margin: '0 0 6px' }}>
+                        {pData.remediesText}
+                      </p>
+                      {pData.remedies.map((item, idx) => (
+                        <div key={idx} style={{ backgroundColor: 'rgba(15, 5, 29, 0.5)', padding: '10px', borderRadius: '8px', border: '1px solid rgba(224, 192, 151, 0.1)' }}>
+                          <h5 style={{ color: 'var(--accent)', fontSize: '13px', margin: '0 0 4px', fontWeight: 'bold' }}>{item.name}</h5>
+                          <p style={{ fontSize: '12px', color: 'var(--text-secondary)', margin: 0, lineHeight: '1.4' }}>{item.desc}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -711,113 +1088,154 @@ export default function Result() {
           {t.doneBtn}
         </button>
       </div>
+        </>
+      )}
 
-      {/* Interactive Detail Modals */}
-      {activeModal && (
-        <div className="modal-overlay" onClick={() => setActiveModal(null)}>
-          <div className="modal-card" style={{ maxWidth: '500px', textAlign: 'left', alignItems: 'flex-start' }} onClick={e => e.stopPropagation()}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', marginBottom: '20px', borderBottom: '1px solid rgba(224,192,151,0.2)', paddingBottom: '10px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Sparkles color="var(--accent)" size={20} />
-                <h3 style={{ fontFamily: 'Cinzel', fontSize: '18px', color: 'var(--accent)', margin: 0 }}>
-                  {activeModal === 'destiny' && "Life Path & Destiny"}
-                  {activeModal === 'strengths' && "Strengths & Challenges"}
-                  {activeModal === 'compatibility' && "Love Compatibility"}
-                  {activeModal === 'remedies' && "Remedies & Guidance"}
-                </h3>
+      {/* Print-Only Detailed Astrology Report Sections */}
+      {isUnlocked && reading && (
+        <div className="print-only-report-data" style={{ marginTop: '30px' }}>
+          <h2 style={{ fontFamily: 'Cinzel', fontSize: '22px', borderBottom: '2px solid black', paddingBottom: '8px', marginBottom: '20px', color: 'black' }}>
+            {pData.title}
+          </h2>
+          
+          {/* Destiny Section */}
+          <div style={{ marginBottom: '24px', pageBreakInside: 'avoid' }}>
+            <h3 style={{ fontFamily: 'Cinzel', fontSize: '18px', margin: '0 0 10px', color: 'black' }}>{pData.destinyTitle}</h3>
+            <p style={{ fontSize: '14px', lineHeight: '1.6', margin: '0 0 10px', color: 'black' }}>
+              {pData.destinyText}
+            </p>
+            <p style={{ fontSize: '13.5px', lineHeight: '1.5', fontWeight: 'bold', color: 'black' }}>{pData.destinyHighlightsTitle}</p>
+            <p style={{ fontSize: '13.5px', lineHeight: '1.5', color: 'black' }}>
+              {pData.destinyHighlights.map((hl, idx) => (
+                <span key={idx}>• {hl}<br/></span>
+              ))}
+            </p>
+          </div>
+
+          {/* Strengths & Challenges Section */}
+          <div style={{ marginBottom: '24px', pageBreakInside: 'avoid' }}>
+            <h3 style={{ fontFamily: 'Cinzel', fontSize: '18px', margin: '0 0 10px', color: 'black' }}>{pData.strengthsTitle}</h3>
+            <p style={{ fontSize: '14px', lineHeight: '1.6', margin: '0 0 8px', color: 'black' }}>
+              <strong>{pData.strengthsLabel}</strong> {pData.strengthsText}
+            </p>
+            <p style={{ fontSize: '14px', lineHeight: '1.6', color: 'black' }}>
+              <strong>{pData.challengesLabel}</strong> {pData.challengesText}
+            </p>
+          </div>
+
+          {/* Toe Reading Section */}
+          <div style={{ marginBottom: '24px', pageBreakInside: 'avoid' }}>
+            <h3 style={{ fontFamily: 'Cinzel', fontSize: '18px', margin: '0 0 10px', color: 'black' }}>
+              {language === 'hi' ? "✦ उंगली पठन अंतर्दृष्टि" : "✦ Toe Reading Insights"}
+            </h3>
+            <p style={{ fontSize: '14px', lineHeight: '1.6', margin: '0 0 8px', color: 'black' }}>
+              <strong>{reading.detected.toe[language]}:</strong> {reading.predictions.toeInsight[language]}
+            </p>
+          </div>
+
+          {/* Arch & Balance Section */}
+          <div style={{ marginBottom: '24px', pageBreakInside: 'avoid' }}>
+            <h3 style={{ fontFamily: 'Cinzel', fontSize: '18px', margin: '0 0 10px', color: 'black' }}>
+              {language === 'hi' ? "✦ मेहराब और संतुलन विश्लेषण" : "✦ Arch & Balance Profile"}
+            </h3>
+            <p style={{ fontSize: '14px', lineHeight: '1.6', margin: '0 0 8px', color: 'black' }}>
+              <strong>{reading.detected.arch[language]}:</strong> {reading.predictions.archInsight[language]}
+            </p>
+          </div>
+
+          {/* Love Compatibility Section */}
+          <div style={{ marginBottom: '24px', pageBreakInside: 'avoid' }}>
+            <h3 style={{ fontFamily: 'Cinzel', fontSize: '18px', margin: '0 0 10px', color: 'black' }}>{pData.compatibilityTitle}</h3>
+            <p style={{ fontSize: '14px', lineHeight: '1.6', margin: '0 0 10px', color: 'black' }}>
+              {pData.compatibilityText}
+            </p>
+            <ul style={{ fontSize: '14px', lineHeight: '1.6', margin: 0, paddingLeft: '20px', color: 'black' }}>
+              {pData.compatibilityIndices.map((item, idx) => (
+                <li key={idx}><strong>{item.label}</strong> {item.value}</li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Remedies & Guidance Section */}
+          <div style={{ marginBottom: '24px', pageBreakInside: 'avoid' }}>
+            <h3 style={{ fontFamily: 'Cinzel', fontSize: '18px', margin: '0 0 10px', color: 'black' }}>{pData.remediesTitle}</h3>
+            <p style={{ fontSize: '14px', lineHeight: '1.6', margin: '0 0 10px', color: 'black' }}>
+              {pData.remediesText}
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {pData.remedies.map((item, idx) => (
+                <div key={idx} style={{ color: 'black' }}>
+                  <strong>{idx + 1}. {item.name}:</strong> {item.desc}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+
+
+
+      {/* Payment simulation gateway modal */}
+      {showPaymentModal && (
+        <div className="modal-overlay" onClick={() => setShowPaymentModal(false)}>
+          <div className="modal-card" style={{ maxWidth: '400px', textAlign: 'center' }} onClick={e => e.stopPropagation()}>
+            <Sparkles color="var(--accent)" size={36} style={{ margin: '0 auto 12px' }} />
+            <h3 style={{ fontFamily: 'Cinzel', fontSize: '18px', color: 'var(--accent)', marginBottom: '16px' }}>
+              {language === 'hi' ? "सुरक्षित भुगतान गेटवे" : "Secure Payment Gateway"}
+            </h3>
+            <p style={{ fontSize: '13.5px', color: 'var(--text-secondary)', marginBottom: '20px', lineHeight: '1.4' }}>
+              {language === 'hi' 
+                ? "यह एक डेमो भुगतान अनुकरण (payment simulation) है। अपनी पूर्ण ज्योतिषीय रिपोर्ट तक पहुंचने के लिए नीचे 'भुगतान करें' पर क्लिक करें।"
+                : "This is a simulated payment gateway. Click 'Proceed to Pay' to securely unlock your full astrological report."}
+            </p>
+            
+            <div style={{ backgroundColor: 'rgba(255,255,255,0.05)', padding: '16px', borderRadius: '10px', marginBottom: '20px', border: '1px solid rgba(224,192,151,0.2)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '13px' }}>
+                <span style={{ color: 'var(--text-secondary)' }}>{language === 'hi' ? "उत्पाद:" : "Product:"}</span>
+                <span style={{ color: '#FFF', fontWeight: 'bold' }}>AstroSole Premium Report</span>
               </div>
-              <X color="var(--text-secondary)" size={20} style={{ cursor: 'pointer' }} onClick={() => setActiveModal(null)} />
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
+                <span style={{ color: 'var(--text-secondary)' }}>{language === 'hi' ? "राशि:" : "Amount:"}</span>
+                <span style={{ color: 'var(--accent)', fontWeight: 'bold' }}>₹49.00</span>
+              </div>
             </div>
 
-            {/* Destiny Modal Content */}
-            {activeModal === 'destiny' && (
-              <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '15px', backgroundColor: 'rgba(122, 75, 148, 0.15)', padding: '12px', borderRadius: '10px', marginBottom: '16px' }}>
-                  <span style={{ fontSize: '28px', color: 'var(--accent)', fontFamily: 'Cinzel' }}>7</span>
-                  <div>
-                    <h4 style={{ color: '#FFFFFF', fontSize: '14px', margin: 0 }}>Life Path Number: 7 (The Seeker)</h4>
-                    <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>You are a deep thinker and searcher of truth.</span>
-                  </div>
-                </div>
-                <p style={{ fontSize: '13.5px', color: 'var(--text-secondary)', lineHeight: '1.6', marginBottom: '12px' }}>
-                  Your foot outline coordinates align closely with Life Path Number 7, indicating a highly spiritual, introspective, and analytical path. You are naturally drawn to mystical sciences, wisdom, and deep life questions.
-                </p>
-                <h5 style={{ color: 'var(--accent)', fontSize: '14px', margin: '14px 0 6px' }}>Destiny Highlights:</h5>
-                <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.5' }}>
-                  • You find peace in solitary reflection.<br/>
-                  • You are highly intuitive—your gut feelings rarely lead you astray.<br/>
-                  • Your destiny calls you to teach or share deep wisdom with the world.
-                </p>
-              </div>
-            )}
-
-            {/* Strengths & Challenges Content */}
-            {activeModal === 'strengths' && (
-              <div>
-                <h5 style={{ color: 'var(--success)', fontSize: '14px', marginBottom: '6px' }}>Core Strengths:</h5>
-                <p style={{ fontSize: '13.5px', color: 'var(--text-secondary)', lineHeight: '1.5', marginBottom: '16px' }}>
-                  Your practical sole structure gives you great resilience. You have a balanced mind and can stay calm in chaotic situations. Loyalty is your biggest asset.
-                </p>
-                <h5 style={{ color: 'var(--danger)', fontSize: '14px', marginBottom: '6px' }}>Cosmic Challenges:</h5>
-                <p style={{ fontSize: '13.5px', color: 'var(--text-secondary)', lineHeight: '1.5' }}>
-                  You sometimes struggle to trust others, leading to isolation. Remember that vulnerability is not weakness. Focus on opening your heart chakra.
-                </p>
-              </div>
-            )}
-
-            {/* Compatibility Content */}
-            {activeModal === 'compatibility' && (
-              <div>
-                <p style={{ fontSize: '13.5px', color: 'var(--text-secondary)', lineHeight: '1.6', marginBottom: '16px' }}>
-                  Your {footTypeTitle} is naturally aligned with certain elemental forces. Here is your cosmic compatibility index:
-                </p>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '8px' }}>
-                    <span style={{ color: '#FFFFFF', fontSize: '13.5px' }}>Love & Romance:</span>
-                    <span style={{ color: 'var(--accent)', fontWeight: 'bold' }}>88% (Highly Compatible with Water Foot)</span>
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '8px' }}>
-                    <span style={{ color: '#FFFFFF', fontSize: '13.5px' }}>Friendship:</span>
-                    <span style={{ color: 'var(--accent)', fontWeight: 'bold' }}>92% (Aligned with Earth & Air elements)</span>
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '4px' }}>
-                    <span style={{ color: '#FFFFFF', fontSize: '13.5px' }}>Business Partnerships:</span>
-                    <span style={{ color: 'var(--accent)', fontWeight: 'bold' }}>80% (Best with stable Earth elements)</span>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Remedies & Guidance Content */}
-            {activeModal === 'remedies' && (
-              <div>
-                <p style={{ fontSize: '13.5px', color: 'var(--text-secondary)', lineHeight: '1.6', marginBottom: '16px' }}>
-                  To balance your planetary elements and remove obstacles, perform these customized remedies:
-                </p>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  <div style={{ backgroundColor: 'rgba(15, 5, 29, 0.5)', padding: '10px', borderRadius: '8px' }}>
-                    <h5 style={{ color: 'var(--accent)', fontSize: '13.5px', margin: '0 0 4px' }}>Grounding Practice</h5>
-                    <p style={{ fontSize: '12.5px', color: 'var(--text-secondary)', margin: 0 }}>Walk barefoot on green grass for 10 minutes every morning to align your Earth element.</p>
-                  </div>
-                  <div style={{ backgroundColor: 'rgba(15, 5, 29, 0.5)', padding: '10px', borderRadius: '8px' }}>
-                    <h5 style={{ color: 'var(--accent)', fontSize: '13.5px', margin: '0 0 4px' }}>Gemstone Suggestion</h5>
-                    <p style={{ fontSize: '12.5px', color: 'var(--text-secondary)', margin: 0 }}>Wearing a yellow sapphire or carrying tiger's eye quartz will enhance focus and ward off negative planetary transits.</p>
-                  </div>
-                  <div style={{ backgroundColor: 'rgba(15, 5, 29, 0.5)', padding: '10px', borderRadius: '8px' }}>
-                    <h5 style={{ color: 'var(--accent)', fontSize: '13.5px', margin: '0 0 4px' }}>Cosmic Mantra</h5>
-                    <p style={{ fontSize: '12.5px', color: 'var(--text-secondary)', margin: 0 }}>Chant "Om Namah Shivaya" 108 times daily to harmonize your inner energy nodes.</p>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            <button 
-              className="btn" 
-              onClick={() => setActiveModal(null)}
-              style={{ width: '100%', marginTop: '20px', padding: '12px 0', fontSize: '13px' }}
-            >
-              Close Details
-            </button>
+            <div style={{ display: 'flex', gap: '12px', width: '100%' }}>
+              <button 
+                className="btn btn-secondary" 
+                onClick={() => setShowPaymentModal(false)}
+                style={{ flex: 1, padding: '12px 0', fontSize: '13px' }}
+              >
+                {language === 'hi' ? "रद्द करें" : "Cancel"}
+              </button>
+              <button 
+                className="btn" 
+                disabled={isPaying}
+                onClick={() => {
+                  setIsPaying(true);
+                  setTimeout(() => {
+                    setIsPaying(false);
+                    setIsUnlocked(true);
+                    setShowPaymentModal(false);
+                  }, 1200);
+                }}
+                style={{ 
+                  flex: 1, 
+                  padding: '12px 0', 
+                  fontSize: '13px',
+                  background: 'linear-gradient(135deg, #FFE3C0 0%, #F5A623 100%)',
+                  color: '#0F051D',
+                  fontWeight: 'bold'
+                }}
+              >
+                {isPaying ? (
+                  <Loader className="animate-spin" size={14} style={{ margin: '0 auto' }} />
+                ) : (
+                  language === 'hi' ? "भुगतान करें" : "Proceed to Pay"
+                )}
+              </button>
+            </div>
           </div>
         </div>
       )}

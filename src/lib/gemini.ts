@@ -1,38 +1,64 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+const rawApiKey = import.meta.env.VITE_GEMINI_API_KEY || "";
+
+export const getCleanApiKey = (): string => {
+  let key = typeof rawApiKey === 'string' ? rawApiKey.trim() : "";
+  // Auto-strip surrounding single or double quotes
+  if ((key.startsWith('"') && key.endsWith('"')) || (key.startsWith("'") && key.endsWith("'"))) {
+    key = key.slice(1, -1).trim();
+  }
+  return key;
+};
+
+const apiKey = getCleanApiKey();
 
 export const hasGeminiApiKey = (): boolean => {
-  return typeof apiKey === 'string' && apiKey.trim().length > 0;
+  return apiKey.length > 0;
 };
 
 export const checkApiKeyStatus = async (): Promise<{ status: 'valid' | 'invalid' | 'expired' | 'error'; message: string }> => {
   if (!hasGeminiApiKey()) {
-    return { status: 'invalid', message: 'API key is not configured.' };
+    return { status: 'invalid', message: 'API key is not configured (missing in environment).' };
   }
+
+  const rawTrimmed = rawApiKey.trim();
+  const hasQuotes = (rawApiKey.startsWith('"') && rawApiKey.endsWith('"')) || (rawApiKey.startsWith("'") && rawApiKey.endsWith("'"));
 
   try {
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
     const result = await model.generateContent("test");
     if (result.response) {
-      return { status: 'valid', message: 'API key is valid.' };
+      return { 
+        status: 'valid', 
+        message: `API key is valid. Key length: ${apiKey.length}. Starts with: '${apiKey.substring(0, 5)}', ends with: '${apiKey.substring(apiKey.length - 3)}'` 
+      };
     }
     return { status: 'error', message: 'Empty response received from API.' };
   } catch (error: any) {
     const msg = error?.message || String(error);
     const lowerMsg = msg.toLowerCase();
     
+    let advice = "";
+    if (hasQuotes) {
+      advice = " (System detected quotes around your key in the config. Please remove them.)";
+    } else if (rawApiKey.length !== rawTrimmed.length) {
+      advice = " (System detected leading/trailing spaces in your key. Please clean them.)";
+    }
+
+    const debugInfo = ` [Key length: ${apiKey.length}. Starts with: '${apiKey.substring(0, 4)}', ends with: '${apiKey.substring(apiKey.length - 4)}'${advice}]`;
+
     if (lowerMsg.includes('api_key_invalid') || lowerMsg.includes('not valid') || lowerMsg.includes('invalid') || lowerMsg.includes('api key not found')) {
-      return { status: 'invalid', message: 'API key is invalid.' };
+      return { status: 'invalid', message: `API key is invalid.${debugInfo}` };
     }
     if (lowerMsg.includes('expired') || lowerMsg.includes('expiration')) {
-      return { status: 'expired', message: 'API key is expired.' };
+      return { status: 'expired', message: `API key is expired.${debugInfo}` };
     }
-    if (lowerMsg.includes('400') || lowerMsg.includes('403')) {
-      return { status: 'invalid', message: `API Authorization failed: ${msg}` };
+    if (lowerMsg.includes('400') || lowerMsg.includes('403') || lowerMsg.includes('401')) {
+      return { status: 'invalid', message: `API Authorization failed: ${msg}.${debugInfo}` };
     }
-    return { status: 'error', message: msg };
+    return { status: 'error', message: `${msg}.${debugInfo}` };
   }
 };
 

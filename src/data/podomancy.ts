@@ -2,7 +2,7 @@
 
 export const shapeTraits = [
   {
-    type: { en: "Square (Peasant)", hi: "चौकोर (Square)" },
+    type: { en: "Roman Foot (Earth Element)", hi: "रोमन पैर (पृथ्वी तत्व)" },
     future: {
       en: "A methodical approach will lead you to steady and reliable growth in your career. Trust your practical instincts.",
       hi: "एक व्यवस्थित दृष्टिकोण आपको अपने करियर में स्थिर और विश्वसनीय विकास की ओर ले जाएगा। अपनी व्यावहारिक प्रवृत्ति पर भरोसा करें।"
@@ -21,7 +21,26 @@ export const shapeTraits = [
     }
   },
   {
-    type: { en: "Roman/Common", hi: "रोमन (Roman)" },
+    type: { en: "Egyptian Foot (Water Element)", hi: "मिस्री पैर (जल तत्व)" },
+    future: {
+      en: "Your high intuition will guide you through complex professional decisions. Trust your gut feelings.",
+      hi: "आपकी उच्च अंतर्ज्ञान आपको जटिल व्यावसायिक निर्णयों में मार्गदर्शन करेगी। अपनी आंतरिक भावनाओं पर भरोसा रखें।"
+    },
+    relationship: {
+      en: "You value deep privacy and romance. You seek profound emotional connections over superficial bonds.",
+      hi: "आप गहरी निजता और रोमांस को महत्व देते हैं। आप सतही बंधनों के बजाय गहरे भावनात्मक संबंधों की तलाश करते हैं।"
+    },
+    personality: {
+      en: "You prefer a tight-knit circle of trusted friends. Your personality is introspective, carrying an air of mystery.",
+      hi: "आप भरोसेमंद दोस्तों का एक छोटा दायरा पसंद करते हैं। आपका व्यक्तित्व आत्मनिरीक्षण करने वाला है, जिसमें रहस्य की भावना है।"
+    },
+    suggestion: {
+      en: "Your intuition is a gift—spend time in quiet environments to recharge and listen to your inner voice.",
+      hi: "आपका अंतर्ज्ञान एक उपहार है—रिचार्ज होने और अपनी अंतरात्मा की आवाज़ सुनने के लिए शांत वातावरण में समय बिताएं।"
+    }
+  },
+  {
+    type: { en: "Greek Foot (Fire Element)", hi: "यूनानी पैर (अग्नि तत्व)" },
     future: {
       en: "Your adventurous spirit will open up dynamic and unexpected career paths. Embrace new challenges.",
       hi: "आपकी साहसिक भावना गतिशील और अप्रत्याशित करियर के रास्ते खोलेगी। नई चुनौतियों को स्वीकार करें।"
@@ -40,29 +59,29 @@ export const shapeTraits = [
     }
   },
   {
-    type: { en: "Egyptian", hi: "मिस्री (Egyptian)" },
+    type: { en: "Square Foot (Air Element)", hi: "चौकोर पैर (वायु तत्व)" },
     future: {
-      en: "Your high intuition will guide you through complex professional decisions. Trust your gut feelings.",
-      hi: "आपकी उच्च अंतर्ज्ञान आपको जटिल व्यावसायिक निर्णयों में मार्गदर्शन करेगी। अपनी आंतरिक भावनाओं पर भरोसा रखें।"
+      en: "Your communication skills and intellectual analysis will unlock innovative, remote or research-based opportunities.",
+      hi: "आपके संचार कौशल और बौद्धिक विश्लेषण नए, दूरस्थ या अनुसंधान-आधारित अवसरों को अनलॉक करेंगे।"
     },
     relationship: {
-      en: "You value deep privacy and romance. You seek profound emotional connections over superficial bonds.",
-      hi: "आप गहरी निजता और रोमांस को महत्व देते हैं। आप सतही बंधनों के बजाय गहरे भावनात्मक संबंधों की तलाश करते हैं।"
+      en: "You value intellectual stimulation and freedom in your relationships, thriving with partners who respect your independence.",
+      hi: "आप अपने रिश्तों में बौद्धिक प्रेरणा और स्वतंत्रता को महत्व देते हैं, ऐसे भागीदारों के साथ पनपते हैं जो आपकी स्वतंत्रता का सम्मान करते।"
     },
     personality: {
-      en: "You prefer a tight-knit circle of trusted friends. Your personality is introspective, carrying an air of mystery.",
-      hi: "आप भरोसेमंद दोस्तों का एक छोटा दायरा पसंद करते हैं। आपका व्यक्तित्व आत्मनिरीक्षण करने वाला है, जिसमें रहस्य की भावना है।"
+      en: "You are rational, highly analytical, and open-minded. You love sharing ideas and exploring philosophical horizons.",
+      hi: "आप तर्कसंगत, अत्यधिक विश्लेषणात्मक और खुले विचारों वाले हैं। आप विचारों को साझा करना और दार्शनिक क्षितिजों की खोज करना पसंद करते हैं।"
     },
     suggestion: {
-      en: "Your intuition is a gift—spend time in quiet environments to recharge and listen to your inner voice.",
-      hi: "आपका अंतर्ज्ञान एक उपहार है—रिचार्ज होने और अपनी अंतरात्मा की आवाज़ सुनने के लिए शांत वातावरण में समय बिताएं।"
+      en: "Engage in creative journaling and mental puzzles to keep your active mind sharp and balanced.",
+      hi: "अपने सक्रिय दिमाग को तेज और संतुलित रखने के लिए रचनात्मक जर्नलिंग और मानसिक पहेलियों में शामिल हों।"
     }
   }
 ];
 
 export const lineTraits = [
   {
-    type: { en: "Strong Destiny Line & Deep Life Line", hi: "मजबूत भाग्य रेखा और गहरी जीवन रेखा" },
+    type: { en: "Deep Destiny Line & High Arch", hi: "गहरी भाग्य रेखा और ऊंचा मेहराब" },
     future: {
       en: "You have a clear sense of purpose. A major breakthrough is on your horizon if you stay focused.",
       hi: "आपके पास उद्देश्य की स्पष्ट भावना है। यदि आप केंद्रित रहते हैं तो आपके क्षितिज पर एक बड़ी सफलता है।"
@@ -72,8 +91,8 @@ export const lineTraits = [
       hi: "आपकी जीवन शक्ति मजबूत है। दीर्घकालिक शारीरिक भलाई सुनिश्चित करने के लिए अपना वर्तमान संतुलन बनाए रखें।"
     },
     personality: {
-      en: "You naturally command respect in group settings. Your character is strong-willed and confident.",
-      hi: "समूह सेटिंग्स में स्वाभाविक रूप से आपका सम्मान किया जाता है। आपका चरित्र दृढ़ इच्छाशक्ति वाला और आत्मविश्वासी है।"
+      en: "You naturally command respect in group settings. Your character is strong-willed, highly independent, and confident.",
+      hi: "समूह सेटिंग्स में स्वाभाविक रूप से आपका सम्मान किया जाता है। आपका चरित्र दृढ़ इच्छाशक्ति वाला, अत्यधिक स्वतंत्र और आत्मविश्वासी है।"
     },
     suggestion: {
       en: "Leverage your strong willpower by setting clear, ambitious goals. Don't shy away from leadership roles.",
@@ -81,7 +100,7 @@ export const lineTraits = [
     }
   },
   {
-    type: { en: "Faint or Broken Lines", hi: "धुंधली या टूटी रेखाएं" },
+    type: { en: "Faint Lines & Balanced Arch", hi: "धुंधली रेखाएं और संतुलित मेहराब" },
     future: {
       en: "Your path is unpredictable but full of potential. Adaptability will be the key to your success.",
       hi: "आपका रास्ता अप्रत्याशित है लेकिन संभावनाओं से भरा है। अनुकूलन क्षमता आपकी सफलता की कुंजी होगी।"
@@ -91,8 +110,8 @@ export const lineTraits = [
       hi: "आपको तनाव या परिसंचरण की समस्या हो सकती है। ग्राउंडिंग व्यायाम और उचित आराम पर ध्यान दें।"
     },
     personality: {
-      en: "Your social circle may change frequently as you evolve. You have an adaptable and deeply sensitive personality.",
-      hi: "जैसे-जैसे आप विकसित होते हैं, आपका सामाजिक दायरा अक्सर बदल सकता है। आपका व्यक्तित्व अनुकूलनीय और गहराई से संवेदनशील है।"
+      en: "Your social circle may change frequently as you evolve. You have an adaptable, multi-talented, and deeply sensitive personality.",
+      hi: "जैसे-जैसे आप विकसित होते हैं, आपका सामाजिक दायरा अक्सर बदल सकता है। आपका व्यक्तित्व अनुकूलनीय, बहुमुखी और गहराई से संवेदनशील है।"
     },
     suggestion: {
       en: "Embrace flexibility in your daily routine. Practice mindfulness to handle unpredictable changes with grace.",
@@ -100,7 +119,7 @@ export const lineTraits = [
     }
   },
   {
-    type: { en: "Many Short Horizontal Lines", hi: "कई छोटी क्षैतिज रेखाएं" },
+    type: { en: "Horizontal Stress Ridges & Flat Arch", hi: "क्षैतिज तनाव रेखाएं और समतल मेहराब" },
     future: {
       en: "You may face temporary obstacles, but they are stepping stones. Patience is required right now.",
       hi: "आपको अस्थायी बाधाओं का सामना करना पड़ सकता है, लेकिन वे सीढ़ियां हैं। अभी धैर्य की आवश्यकता है।"
@@ -122,7 +141,7 @@ export const lineTraits = [
 
 export const sizeTraits = [
   {
-    type: { en: "Large / Wide Foot", hi: "बड़े / चौड़े पैर" },
+    type: { en: "Wide Foot & Morton's Toe", hi: "चौड़ा पैर और लंबी दूसरी उंगली" },
     relationship: {
       en: "You are grounded and solid. Partners rely on your resilience and trustworthy nature during hard times.",
       hi: "आप जमीन से जुड़े और ठोस हैं। कठिन समय के दौरान साथी आपके लचीलेपन और भरोसेमंद स्वभाव पर भरोसा करते हैं।"
@@ -132,8 +151,8 @@ export const sizeTraits = [
       hi: "आपके पास एक मजबूत शारीरिक आधार है। दूसरों का बहुत अधिक भावनात्मक भार लेने से सावधान रहें।"
     },
     personality: {
-      en: "You are widely recognized as a dependable friend. You project a calm, assertive, and steadfast aura.",
-      hi: "आपको व्यापक रूप से एक भरोसेमंद दोस्त के रूप में पहचाना जाता है। आप एक शांत, मुखर और दृढ़ आभा प्रदर्शित करते हैं।"
+      en: "You are widely recognized as a dependable friend with high drive and leadership ambition.",
+      hi: "आपको उच्च प्रेरणा और नेतृत्व महत्वाकांक्षा वाले एक भरोसेमंद दोस्त के रूप में व्यापक रूप से पहचाना जाता है।"
     },
     suggestion: {
       en: "Since you carry the weight for others, establish healthy emotional boundaries. Make sure to prioritize your own needs.",
@@ -141,7 +160,7 @@ export const sizeTraits = [
     }
   },
   {
-    type: { en: "Small / Narrow Foot", hi: "छोटे / संकरे पैर" },
+    type: { en: "Narrow Foot & Tapered Toes", hi: "संकरा पैर और घटती हुई उंगलियां" },
     relationship: {
       en: "You are highly imaginative and sensitive. You require a partner who understands your delicate emotional depth.",
       hi: "आप अत्यधिक कल्पनाशील और संवेदनशील हैं। आपको ऐसे साथी की आवश्यकता है जो आपकी नाजुक भावनात्मक गहराई को समझे।"
@@ -157,6 +176,61 @@ export const sizeTraits = [
     suggestion: {
       en: "Protect your sensitive energy by curating a peaceful living space. Engage regularly in creative outlets.",
       hi: "शांतिपूर्ण रहने की जगह बनाकर अपनी संवेदनशील ऊर्जा को सुरक्षित रखें। रचनात्मक कार्यों में नियमित रूप से भाग लें।"
+    }
+  }
+];
+
+export const toeTraits = [
+  {
+    type: { en: "Morton's Toe (Second Toe Longer)", hi: "मॉर्टन टो (दूसरी लंबी उंगली)" },
+    desc: {
+      en: "The second toe being longer than the big toe signifies strong leadership qualities, high ambition, and a creative drive. You are passionate and often motivate others, though you can be headstrong at times.",
+      hi: "अंगूठे से बड़ी दूसरी उंगली मजबूत नेतृत्व गुणों, उच्च महत्वाकांक्षा और रचनात्मक प्रेरणा का प्रतीक है। आप उत्साही हैं और अक्सर दूसरों को प्रेरित करते हैं, हालांकि कभी-कभी आप अड़ियल हो सकते हैं।"
+    }
+  },
+  {
+    type: { en: "Wide Toe Spacing", hi: "उंगलियों के बीच अधिक अंतर" },
+    desc: {
+      en: "Generous spacing between your toes indicates a deep love for personal freedom, analytical thinking, and travel. You do not like to be constrained by traditional boundaries and prefer carving your own unique path.",
+      hi: "आपकी उंगलियों के बीच का अंतर व्यक्तिगत स्वतंत्रता, विश्लेषणात्मक सोच और यात्रा के प्रति गहरे प्रेम को दर्शाता है। आप पारंपरिक सीमाओं से बंधना पसंद नहीं करते हैं।"
+    }
+  },
+  {
+    type: { en: "Crooked Little Toe (Rebel Profile)", hi: "टेढ़ी छोटी उंगली (विद्रोही स्वभाव)" },
+    desc: {
+      en: "A crooked or independently moving little toe suggests an unconventional nature. You value your individuality above social conformity, bringing fresh, out-of-the-box ideas to any group.",
+      hi: "एक टेढ़ी या स्वतंत्र रूप से हिलने वाली छोटी उंगली एक अपरंपरागत स्वभाव का सुझाव देती है। आप सामाजिक अनुरूपता से ऊपर अपनी व्यक्तिगत स्वतंत्रता को महत्व देते हैं।"
+    }
+  },
+  {
+    type: { en: "Perfect Tapered Toes", hi: "आदर्श रूप से घटती उंगलियां" },
+    desc: {
+      en: "Toes that decrease in size in a neat, orderly line show a structured, highly diplomatic mind. You are an excellent communicator, tactful in conflict, and appreciate order and clarity in your life.",
+      hi: "उंगलियां जो एक साफ और व्यवस्थित रूप से घटती हैं, एक संरचित, अत्यधिक कूटनीतिक दिमाग को दर्शाती हैं। आप एक उत्कृष्ट संचारक हैं और संघर्ष में कुशल हैं।"
+    }
+  }
+];
+
+export const archTraits = [
+  {
+    type: { en: "High Arch (Spiritual Seeker)", hi: "ऊंचा मेहराब (आध्यात्मिक खोजक)" },
+    desc: {
+      en: "A high arch represents a highly independent, self-reliant, and intellectual personality. You enjoy solitude to recharge, have a rich inner dream life, and are naturally drawn to philosophical or spiritual topics.",
+      hi: "एक ऊंचा मेहराब अत्यधिक स्वतंत्र, आत्मनिर्भर और बौद्धिक व्यक्तित्व का प्रतिनिधित्व करता है। आप खुद को रिचार्ज करने के लिए अकेलेपन का आनंद लेते हैं और आध्यात्मिक विषयों के प्रति आकर्षित होते हैं।"
+    }
+  },
+  {
+    type: { en: "Low/Flat Arch (The Grounded Realist)", hi: "समतल मेहराब (व्यावहारिक यथार्थवादी)" },
+    desc: {
+      en: "A low or flat arch shows that you are incredibly grounded, realistic, and highly social. You value community, family, and team activities, and possess a practical attitude that gets things done.",
+      hi: "एक कम या सपाट मेहराब दर्शाता है कि आप अविश्वसनीय रूप से व्यावहारिक, यथार्थवादी और सामाजिक हैं। आप समुदाय, परिवार और व्यावहारिक दृष्टिकोण को महत्व देते हैं।"
+    }
+  },
+  {
+    type: { en: "Balanced Arch (The Harmonizer)", hi: "संतुलित मेहराब (सामंजस्यपूर्ण स्वभाव)" },
+    desc: {
+      en: "A balanced arch is the sign of a harmonizer. You seamlessly blend practicality with intuition. You are flexible, easy-going, and know how to maintain equilibrium in high-stress situations.",
+      hi: "एक संतुलित मेहराब एक सामंजस्य बनाने वाले का संकेत है। आप व्यावहारिकता और अंतर्ज्ञान का मिश्रण हैं। आप लचीले हैं और तनावपूर्ण स्थितियों में संतुलन बनाए रखना जानते हैं।"
     }
   }
 ];
@@ -267,12 +341,16 @@ export const generateDetailedReading = () => {
   const shape = getRandom(shapeTraits);
   const lines = getRandom(lineTraits);
   const size = getRandom(sizeTraits);
+  const toe = getRandom(toeTraits);
+  const arch = getRandom(archTraits);
   
   return {
     detected: {
       shape: shape.type,
       lines: lines.type,
       size: size.type,
+      toe: toe.type,
+      arch: arch.type
     },
     predictions: {
       future: {
@@ -292,8 +370,16 @@ export const generateDetailedReading = () => {
         hi: `${shape.personality.hi} ${lines.personality.hi} ${size.personality.hi}`
       },
       suggestion: {
-        en: `• ${shape.suggestion.en}\n• ${lines.suggestion.en}\n• ${size.suggestion.en}`,
-        hi: `• ${shape.suggestion.hi}\n• ${lines.suggestion.hi}\n• ${size.suggestion.hi}`
+        en: `• ${shape.suggestion.en}\n• ${lines.suggestion.en}\n• ${size.suggestion.en}\n• ${toe.desc.en}\n• ${arch.desc.en}`,
+        hi: `• ${shape.suggestion.hi}\n• ${lines.suggestion.hi}\n• ${size.suggestion.hi}\n• ${toe.desc.hi}\n• ${arch.desc.hi}`
+      },
+      toeInsight: {
+        en: toe.desc.en,
+        hi: toe.desc.hi
+      },
+      archInsight: {
+        en: arch.desc.en,
+        hi: arch.desc.hi
       }
     }
   };

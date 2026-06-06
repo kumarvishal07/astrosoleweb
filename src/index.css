@@ -783,7 +783,59 @@ a {
     color: black !important;
     text-shadow: none !important;
   }
+
+  .print-only-report-data {
+    display: block !important;
+  }
+  
+  .print-only {
+    display: block !important;
+  }
+  
+  .screen-only {
+    display: none !important;
+  }
 }
+
+.print-only-report-data {
+  display: none !important;
+}
+
+.print-only {
+  display: none !important;
+}
+
+.metric-content-wrapper {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+}
+
+.metric-content-wrapper.expanded {
+  max-height: 600px;
+  opacity: 1;
+}
+
+@media print {
+  .metric-content-wrapper {
+    display: block !important;
+    max-height: none !important;
+    opacity: 1 !important;
+    overflow: visible !important;
+  }
+  
+  .glass-card {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+  }
+}
+
 
 
 

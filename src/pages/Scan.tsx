@@ -8,16 +8,15 @@ import {
   Phone,
   Mail,
   ChevronLeft,
-  ArrowLeft,
   Loader,
   Scan as ScanIcon,
   Footprints,
   Sparkles,
-  ShieldCheck,
   AlertCircle
 } from 'lucide-react';
-import { verifyIsFootImage, hasGeminiApiKey } from '../lib/gemini';
+import { verifyIsFootImage, hasGeminiApiKey, checkApiKeyStatus } from '../lib/gemini';
 import appsoleLogo from '../assets/logo.png';
+import sampleImage from '../assets/sample.png';
 import { track } from '@vercel/analytics';
 
 interface ErrorState {
@@ -46,7 +45,6 @@ export default function Scan() {
   const [address, setAddress] = useState('');
   const [errors, setErrors] = useState<ErrorState>({});
   const [isFormCompleted, setIsFormCompleted] = useState(false);
-  const [showScannerInstructions, setShowScannerInstructions] = useState(true);
 
   // Scanner State
   const [imageUri, setImageUri] = useState<string | null>(null);
@@ -59,6 +57,74 @@ export default function Scan() {
   // AI Verification State
   const [isValidating, setIsValidating] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
+
+  // User override state on verification failure
+  const [showOverride, setShowOverride] = useState(false);
+  const [pendingImage, setPendingImage] = useState<{ url: string; w: number; h: number } | null>(null);
+
+  useEffect(() => {
+    if (location.state?.useSample) {
+      // Auto fill form
+      setName(language === 'hi' ? 'नमूना साधक' : 'Sample Seeker');
+      setMobile('9999999999');
+      setIsFormCompleted(true);
+      
+      // Auto set sample image
+      setImageUri(sampleImage);
+      setImageWidth(500);
+      setImageHeight(700);
+      
+      // Start scanning automatically
+      const timer = setTimeout(() => {
+        setIsScanning(true);
+        setScanStep('orient');
+        setScanError(null);
+        timeoutsRef.current = [];
+
+        // Contour Scan (1.5 seconds)
+        const t2 = setTimeout(() => {
+          setScanStep('contour');
+        }, 1500);
+        timeoutsRef.current.push(t2);
+
+        // Mapping Lines (3.0 seconds)
+        const t3 = setTimeout(() => {
+          setScanStep('lines');
+        }, 3000);
+        timeoutsRef.current.push(t3);
+
+        // Finalizing (4.5 seconds)
+        const t4 = setTimeout(() => {
+          setScanStep('final');
+        }, 4500);
+        timeoutsRef.current.push(t4);
+
+        // Complete & Navigate (6.0 seconds)
+        const t5 = setTimeout(() => {
+          setIsScanning(false);
+          setScanStep('idle');
+          navigate('/result', {
+            state: { name: language === 'hi' ? 'नमूना साधक' : 'Sample Seeker', address: 'Cosmic Temple', mobile: '9999999999', email: 'sample@astrosole.in', language, isSample: true }
+          });
+        }, 6000);
+        timeoutsRef.current.push(t5);
+      }, 500);
+
+      return () => clearTimeout(timer);
+    }
+  }, [location.state, language, navigate]);
+
+  useEffect(() => {
+    const runDiagnostics = async () => {
+      try {
+        const status = await checkApiKeyStatus();
+        console.log("API diagnostics status:", status.message);
+      } catch (err) {
+        console.error("Diagnostic error:", err);
+      }
+    };
+    runDiagnostics();
+  }, []);
 
   // References to active timeouts to clear them if scan fails
   const timeoutsRef = useRef<any[]>([]);
@@ -113,7 +179,6 @@ export default function Scan() {
 
     window.open(whatsappUrl, '_blank');
     setIsFormCompleted(true);
-    setShowScannerInstructions(true);
   };
 
   const handleImageCapture = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -121,18 +186,6 @@ export default function Scan() {
     if (file) {
       setValidationError(null);
       setScanError(null);
-
-      // Check if API key is configured first
-      if (!hasGeminiApiKey()) {
-        setValidationError(
-          language === 'hi'
-            ? "सत्यापन त्रुटि: जेमिनी एपीआई कुंजी (API Key) कॉन्फ़िगर नहीं है। कृपया .env फ़ाइल में VITE_GEMINI_API_KEY जोड़ें।"
-            : "Verification Error: Gemini API key is not configured. Please add VITE_GEMINI_API_KEY to your .env file."
-        );
-        if (fileInputRef.current) fileInputRef.current.value = '';
-        if (galleryInputRef.current) galleryInputRef.current.value = '';
-        return;
-      }
 
       setIsValidating(true);
 
@@ -157,6 +210,20 @@ export default function Scan() {
           return;
         }
 
+        // If API key is missing, offer manual override options
+        if (!hasGeminiApiKey()) {
+          console.warn("Gemini API key is not configured - offering manual override");
+          try {
+            track('ai_verification_skipped_missing_key');
+          } catch (trackErr) {
+            console.error("Failed to send telemetry", trackErr);
+          }
+          setPendingImage({ url: imageUrl, w: width, h: height });
+          setShowOverride(true);
+          setIsValidating(false);
+          return;
+        }
+
         try {
           const isFoot = await verifyIsFootImage(file);
 
@@ -174,7 +241,7 @@ export default function Scan() {
             if (galleryInputRef.current) galleryInputRef.current.value = '';
           }
         } catch (error: any) {
-          console.error("AI verification error", error);
+          console.error("AI verification error - offering manual override:", error);
           const errMsg = error?.message || String(error);
           
           try {
@@ -183,13 +250,9 @@ export default function Scan() {
             console.error("Failed to send telemetry", trackErr);
           }
 
-          setValidationError(
-            language === 'hi'
-              ? `एआई सत्यापन विफल रहा: ${errMsg}। कृपया इंटरनेट कनेक्शन की जांच करें या पुनः प्रयास करें।`
-              : `AI verification failed: ${errMsg}. Please check your internet connection or try again.`
-          );
-          if (fileInputRef.current) fileInputRef.current.value = '';
-          if (galleryInputRef.current) galleryInputRef.current.value = '';
+          // Show manual override prompt
+          setPendingImage({ url: imageUrl, w: width, h: height });
+          setShowOverride(true);
         } finally {
           setIsValidating(false);
         }
@@ -242,7 +305,7 @@ export default function Scan() {
       setIsScanning(false);
       setScanStep('idle');
       navigate('/result', {
-        state: { name: name || 'Seeker', address, mobile, email, language }
+        state: { name: name || 'User', address, mobile, email, language }
       });
     }, 6000);
     timeoutsRef.current.push(t5);
@@ -402,29 +465,101 @@ export default function Scan() {
       {!isFormCompleted ? (
         <div className="responsive-grid">
 
-          {/* Left Column: Astrologer explanation graphics/card */}
+          {/* Left Column: Foot Scan Instructions Card */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             <div className="glass-card" style={{ margin: 0, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: '24px' }}>
               <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
-                  <ShieldCheck color="var(--accent)" size={32} />
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
+                  <Footprints color="var(--accent)" size={32} />
                   <h3 style={{ fontFamily: 'Cinzel', fontSize: '20px', color: 'var(--accent)', margin: 0 }}>
-                    {t.infoTextTitle}
+                    {language === 'hi' ? 'अपने पैर स्कैन करें' : 'Scan Your Feet'}
                   </h3>
                 </div>
 
-                {/* Genuine celestial validation image */}
-                <div style={{ width: '100%', height: '220px', borderRadius: '10px', overflow: 'hidden', marginBottom: '16px', border: '1px solid rgba(224, 192, 151, 0.15)', background: '#070114', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '13.5px', marginBottom: '20px', lineHeight: '1.4' }}>
+                  {language === 'hi'
+                    ? 'कुछ सरल चरणों में अपने पैरों को स्कैन करके सटीक अंतर्दृष्टि प्राप्त करें।'
+                    : 'Get accurate insights by scanning your feet in a few simple steps.'}
+                </p>
+
+                {/* Large pulsing neon circle with constellation foot visual */}
+                <div style={{
+                  width: '180px',
+                  height: '180px',
+                  borderRadius: '50%',
+                  border: '3px solid #A855F7',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  margin: '0 auto 20px',
+                  boxShadow: '0 0 25px rgba(168, 85, 247, 0.7), inset 0 0 15px rgba(168, 85, 247, 0.4)',
+                  backgroundColor: 'rgba(12, 4, 25, 0.5)',
+                  position: 'relative',
+                  overflow: 'hidden'
+                }}>
                   <img
-                    src="/images/celestial_verification.png"
-                    alt="Celestial Verification Map"
-                    style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                    src="/images/constellation_feet.png"
+                    alt="Constellation Feet"
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                      zIndex: 2
+                    }}
                   />
+                  <div className="absolute inset-0 rounded-full animate-ping" style={{ border: '1px solid rgba(168, 85, 247, 0.35)', pointerEvents: 'none' }} />
                 </div>
 
-                <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.5', margin: 0 }}>
-                  {t.infoTextDesc}
-                </p>
+                {/* Steps List */}
+                <div style={{
+                  width: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  backgroundColor: 'rgba(20, 10, 35, 0.35)',
+                  borderRadius: '16px',
+                  border: '1.2px solid rgba(168, 85, 247, 0.15)',
+                  overflow: 'hidden'
+                }}>
+                  {/* Step 1 */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '14px', padding: '12px 16px', borderBottom: '1px solid rgba(168, 85, 247, 0.12)' }}>
+                    <div style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: 'rgba(168, 85, 247, 0.15)', display: 'flex', justifyContent: 'center', alignItems: 'center', border: '1px solid rgba(168, 85, 247, 0.4)', flexShrink: 0 }}>
+                      <MapPin size={15} color="#E0C097" />
+                    </div>
+                    <span style={{ fontSize: '13px', color: '#DFD5E6', fontWeight: 500 }}>
+                      {language === 'hi' ? "1. अपने पैरों को समतल सतह पर रखें" : "1. Place your feet on a flat surface"}
+                    </span>
+                  </div>
+
+                  {/* Step 2 */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '14px', padding: '12px 16px', borderBottom: '1px solid rgba(168, 85, 247, 0.12)' }}>
+                    <div style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: 'rgba(168, 85, 247, 0.15)', display: 'flex', justifyContent: 'center', alignItems: 'center', border: '1px solid rgba(168, 85, 247, 0.4)', flexShrink: 0 }}>
+                      <Sparkles size={15} color="#E0C097" />
+                    </div>
+                    <span style={{ fontSize: '13px', color: '#DFD5E6', fontWeight: 500 }}>
+                      {language === 'hi' ? "2. अच्छी रोशनी सुनिश्चित करें" : "2. Ensure good lighting"}
+                    </span>
+                  </div>
+
+                  {/* Step 3 */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '14px', padding: '12px 16px', borderBottom: '1px solid rgba(168, 85, 247, 0.12)' }}>
+                    <div style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: 'rgba(168, 85, 247, 0.15)', display: 'flex', justifyContent: 'center', alignItems: 'center', border: '1px solid rgba(168, 85, 247, 0.4)', flexShrink: 0 }}>
+                      <Camera size={15} color="#E0C097" />
+                    </div>
+                    <span style={{ fontSize: '13px', color: '#DFD5E6', fontWeight: 500 }}>
+                      {language === 'hi' ? "3. कैमरा स्थिर रखें और कैप्चर करें" : "3. Hold camera steady and capture"}
+                    </span>
+                  </div>
+
+                  {/* Step 4 */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '14px', padding: '12px 16px' }}>
+                    <div style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: 'rgba(168, 85, 247, 0.15)', display: 'flex', justifyContent: 'center', alignItems: 'center', border: '1px solid rgba(168, 85, 247, 0.4)', flexShrink: 0 }}>
+                      <ScanIcon size={15} color="#E0C097" />
+                    </div>
+                    <span style={{ fontSize: '13px', color: '#DFD5E6', fontWeight: 500 }}>
+                      {language === 'hi' ? "4. हम विश्लेषण करेंगे और रीडिंग उत्पन्न करेंगे" : "4. We'll analyze and generate your reading"}
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -516,7 +651,7 @@ export default function Scan() {
 
               <button
                 type="button"
-                onClick={() => { setIsFormCompleted(true); setShowScannerInstructions(true); }}
+                onClick={() => setIsFormCompleted(true)}
                 style={{
                   background: 'none',
                   border: 'none',
@@ -535,145 +670,11 @@ export default function Scan() {
           </div>
 
         </div>
-      ) : showScannerInstructions ? (
-        /* 2. Instruction Guide Page ("Scan Your Feet") */
-        <div style={{ width: '100%', maxWidth: '480px', margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <header className="page-header" style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative', border: 'none', background: 'transparent', boxShadow: 'none', marginBottom: '10px', paddingTop: '10px' }}>
-            <button
-              onClick={() => setIsFormCompleted(false)}
-              style={{
-                position: 'absolute',
-                left: 0,
-                background: 'none',
-                border: 'none',
-                color: '#E0C097',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                padding: '4px'
-              }}
-            >
-              <ArrowLeft size={24} />
-            </button>
-            <h1 className="page-header-title" style={{ fontFamily: 'Cinzel', fontSize: '24px', color: '#E0C097', margin: 0, fontWeight: 'bold' }}>
-              {language === 'hi' ? 'अपने पैर स्कैन करें' : 'Scan Your Feet'}
-            </h1>
-          </header>
-
-          <p style={{ color: '#A097B4', fontSize: '14px', marginTop: '4px', marginBottom: '24px', maxWidth: '400px', textAlign: 'center', lineHeight: '1.4' }}>
-            {language === 'hi'
-              ? 'कुछ सरल चरणों में अपने पैरों को स्कैन करके सटीक अंतर्दृष्टि प्राप्त करें।'
-              : 'Get accurate insights by scanning your feet in a few simple steps.'}
-          </p>
-
-          {/* Large pulsing neon circle with constellation foot visual */}
-          <div style={{
-            width: '230px',
-            height: '230px',
-            borderRadius: '50%',
-            border: '4px solid #A855F7',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            margin: '0 auto 28px',
-            boxShadow: '0 0 35px rgba(168, 85, 247, 0.8), inset 0 0 25px rgba(168, 85, 247, 0.5)',
-            backgroundColor: 'rgba(12, 4, 25, 0.5)',
-            position: 'relative',
-            overflow: 'hidden'
-          }}>
-            <img
-              src="/images/constellation_feet.png"
-              alt="Constellation Feet"
-              style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                zIndex: 2
-              }}
-            />
-            <div className="absolute inset-0 rounded-full animate-ping" style={{ border: '1px solid rgba(168, 85, 247, 0.35)', pointerEvents: 'none' }} />
-          </div>
-
-          {/* Steps List */}
-          <div style={{
-            width: '100%',
-            display: 'flex',
-            flexDirection: 'column',
-            marginBottom: '32px',
-            backgroundColor: 'rgba(20, 10, 35, 0.35)',
-            borderRadius: '16px',
-            border: '1.2px solid rgba(168, 85, 247, 0.15)',
-            overflow: 'hidden'
-          }}>
-            {/* Step 1 */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '14px', padding: '16px 20px', borderBottom: '1px solid rgba(168, 85, 247, 0.12)' }}>
-              <div style={{ width: '38px', height: '38px', borderRadius: '50%', backgroundColor: 'rgba(168, 85, 247, 0.15)', display: 'flex', justifyContent: 'center', alignItems: 'center', border: '1px solid rgba(168, 85, 247, 0.4)', flexShrink: 0 }}>
-                <MapPin size={18} color="#E0C097" />
-              </div>
-              <span style={{ fontSize: '14px', color: '#DFD5E6', fontWeight: 500 }}>
-                {language === 'hi' ? "1. अपने पैरों को समतल सतह पर रखें" : "1. Place your feet on a flat surface"}
-              </span>
-            </div>
-
-            {/* Step 2 */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '14px', padding: '16px 20px', borderBottom: '1px solid rgba(168, 85, 247, 0.12)' }}>
-              <div style={{ width: '38px', height: '38px', borderRadius: '50%', backgroundColor: 'rgba(168, 85, 247, 0.15)', display: 'flex', justifyContent: 'center', alignItems: 'center', border: '1px solid rgba(168, 85, 247, 0.4)', flexShrink: 0 }}>
-                <Sparkles size={18} color="#E0C097" />
-              </div>
-              <span style={{ fontSize: '14px', color: '#DFD5E6', fontWeight: 500 }}>
-                {language === 'hi' ? "2. अच्छी रोशनी सुनिश्चित करें" : "2. Ensure good lighting"}
-              </span>
-            </div>
-
-            {/* Step 3 */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '14px', padding: '16px 20px', borderBottom: '1px solid rgba(168, 85, 247, 0.12)' }}>
-              <div style={{ width: '38px', height: '38px', borderRadius: '50%', backgroundColor: 'rgba(168, 85, 247, 0.15)', display: 'flex', justifyContent: 'center', alignItems: 'center', border: '1px solid rgba(168, 85, 247, 0.4)', flexShrink: 0 }}>
-                <Camera size={18} color="#E0C097" />
-              </div>
-              <span style={{ fontSize: '14px', color: '#DFD5E6', fontWeight: 500 }}>
-                {language === 'hi' ? "3. कैमरा स्थिर रखें और कैप्चर करें" : "3. Hold camera steady and capture"}
-              </span>
-            </div>
-
-            {/* Step 4 */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '14px', padding: '16px 20px' }}>
-              <div style={{ width: '38px', height: '38px', borderRadius: '50%', backgroundColor: 'rgba(168, 85, 247, 0.15)', display: 'flex', justifyContent: 'center', alignItems: 'center', border: '1px solid rgba(168, 85, 247, 0.4)', flexShrink: 0 }}>
-                <ScanIcon size={18} color="#E0C097" />
-              </div>
-              <span style={{ fontSize: '14px', color: '#DFD5E6', fontWeight: 500 }}>
-                {language === 'hi' ? "4. हम विश्लेषण करेंगे और आपकी रीडिंग उत्पन्न करेंगे" : "4. We'll analyze and generate your reading"}
-              </span>
-            </div>
-          </div>
-
-          {/* Begin Scan Button */}
-          <button
-            className="btn"
-            onClick={() => setShowScannerInstructions(false)}
-            style={{
-              width: '100%',
-              padding: '16px 24px',
-              fontSize: '16px',
-              fontWeight: 'bold',
-              background: '#E6C59E',
-              color: '#0F051D',
-              borderRadius: '35px',
-              border: 'none',
-              cursor: 'pointer',
-              boxShadow: '0 4px 20px rgba(230, 197, 158, 0.45)',
-              transition: 'all 0.3s ease',
-              textAlign: 'center',
-              display: 'block'
-            }}
-          >
-            {language === 'hi' ? 'स्कैन शुरू करें' : 'Begin Scan'}
-          </button>
-        </div>
       ) : (
         /* 3. Foot Scanner Camera Phase */
         <div style={{ width: '100%' }}>
           <header className="page-header">
-            <button className="sub-back-btn" onClick={() => setShowScannerInstructions(true)}>
+            <button className="sub-back-btn" onClick={() => setIsFormCompleted(false)}>
               <ChevronLeft size={16} />
               {language === 'hi' ? 'पीछे' : 'Back'}
             </button>
@@ -838,6 +839,55 @@ export default function Scan() {
                     ? "तलवे के ज्योतिषीय संरेखण की जांच करने के लिए फोटो लें या गैलरी से चित्र अपलोड करें। फिर विश्लेषण करें पर क्लिक करें।"
                     : "Capture a vertical, bare photo of your sole. Align with the guide footprints. Trigger the AI telemetry scan sequence."}
                 </p>
+
+
+
+                {/* Manual Override Confirmation Box */}
+                {showOverride && !imageUri && !isValidating && (
+                  <div style={{
+                    backgroundColor: 'rgba(122, 75, 148, 0.15)',
+                    border: '1px dashed var(--accent)',
+                    borderRadius: '12px',
+                    padding: '16px',
+                    marginBottom: '20px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '10px'
+                  }}>
+                    <p style={{ color: 'var(--text-secondary)', margin: 0, fontSize: '13px', lineHeight: '1.4' }}>
+                      {language === 'hi' 
+                        ? "एआई सत्यापन त्रुटि: क्या यह आपके पैर के तलवे की एक स्पष्ट तस्वीर है?"
+                        : "AI verification offline: Confirm this is a bare photo of your foot sole."}
+                    </p>
+                    <div style={{ display: 'flex', gap: '10px' }}>
+                      <button
+                        className="btn btn-secondary"
+                        style={{ flex: 1, padding: '8px 0', fontSize: '12.5px' }}
+                        onClick={() => {
+                          setShowOverride(false);
+                          setPendingImage(null);
+                        }}
+                      >
+                        {language === 'hi' ? "रद्द करें" : "Cancel"}
+                      </button>
+                      <button
+                        className="btn"
+                        style={{ flex: 1, padding: '8px 0', fontSize: '12.5px' }}
+                        onClick={() => {
+                          if (pendingImage) {
+                            setImageUri(pendingImage.url);
+                            setImageWidth(pendingImage.w);
+                            setImageHeight(pendingImage.h);
+                            setValidationError(null);
+                            setShowOverride(false);
+                          }
+                        }}
+                      >
+                        {language === 'hi' ? "हाँ, आगे बढ़ें" : "Yes, Proceed"}
+                      </button>
+                    </div>
+                  </div>
+                )}
 
                 {/* Action Buttons */}
                 {!isScanning && !imageUri && !isValidating && (

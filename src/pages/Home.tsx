@@ -3,11 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { Sparkles, MessageCircle, Mail, HelpCircle, CheckCircle2 } from 'lucide-react';
 import HoroscopeCarousel from '../components/HoroscopeCarousel';
 import appsoleLogo from '../assets/logo.png';
+import sampleImg from '../assets/sample.png';
 
 export default function Home() {
   const navigate = useNavigate();
   const [language, setLanguage] = useState<'en' | 'hi'>('en');
   const [showInfoModal, setShowInfoModal] = useState(false);
+  const [showSampleModal, setShowSampleModal] = useState(false);
 
   const toggleLanguage = () => {
     setLanguage(prev => prev === 'en' ? 'hi' : 'en');
@@ -127,7 +129,7 @@ export default function Home() {
               <h2 style={{ fontFamily: 'Cinzel', fontSize: '15px', color: 'var(--accent)', marginBottom: '4px', textShadow: '0 1px 3px rgba(0,0,0,0.9)' }}>
                 {t.subtitle}
               </h2>
-              <p style={{ fontSize: '12.5px', color: 'yellowgreen', fontWeight: 'bold', lineHeight: '1.3', margin: 0, textShadow: '0 1px 2px rgba(0,0,0,0.9)' }}>
+              <p style={{ fontSize: '12.5px', color: 'var(--text-secondary)', fontWeight: 'bold', lineHeight: '1.3', margin: 0, textShadow: '0 1px 2px rgba(0,0,0,0.9)' }}>
                 {t.description}
               </p>
             </div>
@@ -175,29 +177,45 @@ export default function Home() {
               ? "प्राचीन रेखाओं के साथ ग्रहों की चाल का विश्लेषण करें।"
               : "Analyze sole coordinates to trace planetary lines."}
           </p>
-          <button
-            className="btn"
-            onClick={() => navigate('/scan', { state: { language } })}
-            style={{
-              width: '100%',
-              maxWidth: '240px',
-              padding: '9px 0',
-              fontSize: '13px',
-              fontWeight: 'bold',
-              textTransform: 'uppercase',
-              letterSpacing: '1px',
-              background: 'linear-gradient(135deg, #FFE3C0 0%, #F5A623 100%)',
-              color: '#0F051D',
-              boxShadow: '0 0 25px rgba(245, 166, 35, 0.75)',
-              border: 'none',
-              cursor: 'pointer',
-              transition: 'all 0.3s ease',
-              zIndex: 1
-            }}
-          >
-            <Sparkles size={13} style={{ marginRight: '6px' }} />
-            {t.buttonText}
-          </button>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', width: '100%', maxWidth: '240px', zIndex: 1 }}>
+            <button
+              className="btn"
+              onClick={() => navigate('/scan', { state: { language } })}
+              style={{
+                width: '100%',
+                padding: '8px 0',
+                fontSize: '12.5px',
+                fontWeight: 'bold',
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px',
+                background: 'linear-gradient(135deg, #FFE3C0 0%, #F5A623 100%)',
+                color: '#0F051D',
+                boxShadow: '0 0 15px rgba(245, 166, 35, 0.5)',
+                border: 'none',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+              }}
+            >
+              <Sparkles size={12} style={{ marginRight: '4px' }} />
+              {t.buttonText}
+            </button>
+            <button
+              className="btn btn-secondary"
+              onClick={() => setShowSampleModal(true)}
+              style={{
+                width: '100%',
+                padding: '6px 0',
+                fontSize: '11.5px',
+                fontWeight: 'bold',
+                cursor: 'pointer',
+                border: '1px dashed var(--accent)',
+                backgroundColor: 'rgba(224, 192, 151, 0.05)',
+                color: 'var(--accent)'
+              }}
+            >
+              {language === 'hi' ? "उदाहरण / नमूना रिपोर्ट" : "View Example Report"}
+            </button>
+          </div>
         </div>
 
         {/* Right Column: Astrologer Consultation Card */}
@@ -267,6 +285,43 @@ export default function Home() {
               style={{ width: '100%', padding: '12px 0', fontSize: '13px' }}
             >
               {t.closeBtn}
+            </button>
+          </div>
+        </div>
+      )}
+      {showSampleModal && (
+        <div className="modal-overlay" onClick={() => setShowSampleModal(false)}>
+          <div className="modal-card" style={{ maxWidth: '600px', textAlign: 'center', position: 'relative' }} onClick={e => e.stopPropagation()}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', marginBottom: '16px', borderBottom: '1px solid rgba(224,192,151,0.2)', paddingBottom: '10px' }}>
+              <h3 style={{ fontFamily: 'Cinzel', fontSize: '18px', color: 'var(--accent)', margin: 0 }}>
+                {language === 'hi' ? "उदाहरण ज्योतिषीय रिपोर्ट" : "Example Astrological Report"}
+              </h3>
+              <button 
+                onClick={() => setShowSampleModal(false)}
+                style={{ 
+                  background: 'none', 
+                  border: 'none', 
+                  color: 'var(--text-secondary)', 
+                  cursor: 'pointer',
+                  fontSize: '18px'
+                }}
+              >
+                ✕
+              </button>
+            </div>
+            <div style={{ maxHeight: '70vh', overflowY: 'auto', borderRadius: '8px' }}>
+              <img 
+                src={sampleImg} 
+                alt="Example Astrological Report" 
+                style={{ width: '100%', height: 'auto', display: 'block', borderRadius: '4px' }} 
+              />
+            </div>
+            <button
+              className="btn"
+              onClick={() => setShowSampleModal(false)}
+              style={{ width: '100%', marginTop: '20px', padding: '12px 0', fontSize: '13px' }}
+            >
+              {language === 'hi' ? "बंद करें" : "Close Example"}
             </button>
           </div>
         </div>

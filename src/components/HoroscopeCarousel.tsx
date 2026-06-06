@@ -46,7 +46,7 @@ export default function HoroscopeCarousel({ language = 'en' }: HoroscopeCarousel
 
   return (
     <div style={{ margin: '0', width: '100%', overflow: 'hidden' }}>
-      <h3 style={{ fontSize: '16.5px', fontWeight: 'bold', color: 'var(--accent)', marginBottom: '10px', paddingLeft: '16px', fontFamily: 'Cinzel' }}>
+      <h3 style={{ fontSize: '16.5px', fontWeight: 'bold', color: 'var(--accent)', marginBottom: '10px', paddingLeft: '20px', fontFamily: 'Cinzel' }}>
         {language === 'hi' ? 'दैनिक राशिफल' : 'Daily Horoscope'}
       </h3>
       <div 
@@ -55,9 +55,10 @@ export default function HoroscopeCarousel({ language = 'en' }: HoroscopeCarousel
           display: 'flex',
           overflowX: 'auto',
           scrollSnapType: 'x mandatory',
+          scrollPaddingLeft: '20px',
           scrollbarWidth: 'none',
           msOverflowStyle: 'none',
-          padding: '0 16px',
+          padding: '0 20px',
           gap: '12px'
         }}
       >
