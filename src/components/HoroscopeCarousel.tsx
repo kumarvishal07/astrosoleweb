@@ -74,8 +74,8 @@ export default function HoroscopeCarousel({ language = 'en' }: HoroscopeCarousel
             key={item.symbol}
             className="glass-card"
             style={{
-              minWidth: 'calc(50% - 6px)',
-              maxWidth: 'calc(50% - 6px)',
+              minWidth: '240px',
+              maxWidth: '280px',
               scrollSnapAlign: 'start',
               flexShrink: 0,
               padding: '12px',

@@ -428,13 +428,15 @@ export default function Result() {
     <div className="container" style={{ paddingBottom: '32px' }}>
       
       {/* Top Navbar Header */}
-      <header className="app-header" style={{ marginBottom: '18px', padding: '12px 24px' }}>
+      <header className="app-header" style={{ marginBottom: '18px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           <Menu color="var(--accent)" size={22} style={{ cursor: 'pointer' }} onClick={() => navigate('/')} />
-          <h1 className="logo-text" style={{ fontSize: '20px', fontFamily: 'Cinzel', letterSpacing: '1px' }}>Your Foot Analysis</h1>
+          <h1 className="logo-text" style={{ fontSize: '20px', fontFamily: 'Cinzel', letterSpacing: '1px' }}>
+            {language === 'hi' ? "पैर विश्लेषण" : "Your Foot Analysis"}
+          </h1>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <button className="lang-toggle-btn" style={{ padding: '6px 14px', fontSize: '12px' }} onClick={toggleLanguage}>
+          <button className="lang-toggle-btn" onClick={toggleLanguage}>
             {language === 'en' ? "हिन्दी" : "English"}
           </button>
           <Bell color="var(--accent)" size={20} style={{ cursor: 'pointer' }} />

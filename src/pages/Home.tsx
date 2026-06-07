@@ -72,7 +72,7 @@ export default function Home() {
   return (
     <div className="container" style={{ padding: '16px 0', minHeight: 'auto' }}>
       {/* Mystical Top Navbar */}
-      <header className="app-header" style={{ marginBottom: '16px', padding: '12px 20px' }}>
+      <header className="app-header" style={{ marginBottom: '16px' }}>
         <div className="logo-container" style={{ cursor: 'pointer' }} onClick={() => navigate('/')}>
           <img src={appsoleLogo} alt="AstroSole Logo" style={{ height: '50px', width: 'auto', objectFit: 'contain' }} />
         </div>
@@ -149,8 +149,9 @@ export default function Home() {
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          padding: '12px',
-          height: '130px',
+          padding: '16px 12px',
+          minHeight: '140px',
+          height: 'auto',
           border: '2.5px solid rgba(224, 192, 151, 0.95)',
           background: 'linear-gradient(135deg, rgba(40, 15, 70, 0.85) 0%, rgba(15, 5, 29, 0.95) 100%)',
           position: 'relative',
@@ -219,7 +220,7 @@ export default function Home() {
         </div>
 
         {/* Right Column: Astrologer Consultation Card */}
-        <div className="glass-card consultations-card" style={{ margin: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '12px', height: '130px' }}>
+        <div className="glass-card consultations-card" style={{ margin: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '16px 12px', minHeight: '140px', height: 'auto' }}>
           <h3 style={{ fontFamily: 'Cinzel', fontSize: '15px', color: 'var(--accent)', marginBottom: '4px' }}>
             {t.consultationTitle}
           </h3>

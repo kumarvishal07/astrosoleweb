@@ -836,6 +836,94 @@ a {
   }
 }
 
+/* Mobile Responsiveness & Alignment Fixes */
+@media (max-width: 600px) {
+  .app-header {
+    border-radius: 16px !important;
+    padding: 10px 14px !important;
+    margin-bottom: 16px !important;
+    gap: 8px !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+  }
+  
+  .logo-container img {
+    height: 36px !important;
+  }
+  
+  .logo-text {
+    font-size: 14px !important;
+    letter-spacing: 0.5px !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 140px;
+  }
+  
+  .info-toggle-btn {
+    padding: 6px 10px !important;
+    font-size: 11px !important;
+    margin-right: 6px !important;
+  }
+  
+  .lang-toggle-btn {
+    padding: 6px 10px !important;
+    font-size: 11px !important;
+  }
+
+  /* Make sure modal content fits on screen */
+  .modal-card {
+    padding: 20px !important;
+    max-height: 85vh !important;
+    overflow-y: auto !important;
+  }
+
+  /* Prevent text from going outside cards/boxes */
+  .glass-card {
+    padding: 16px !important;
+    margin-bottom: 16px !important;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  /* Adjust height and layout of hero/carousel */
+  .hero-card {
+    height: auto !important;
+    min-height: 280px !important;
+  }
+
+  .carousel-card {
+    height: auto !important;
+    min-height: 300px !important;
+    padding: 16px 0 !important;
+  }
+
+  /* Sub-page header spacing */
+  .page-header-title {
+    font-size: 20px !important;
+  }
+
+  .sub-back-btn {
+    padding: 6px 10px !important;
+    font-size: 11px !important;
+  }
+}
+
+@media (max-width: 400px) {
+  .logo-text {
+    max-width: 110px;
+  }
+  .info-toggle-btn {
+    padding: 4px 8px !important;
+    font-size: 10px !important;
+  }
+  .lang-toggle-btn {
+    padding: 4px 8px !important;
+    font-size: 10px !important;
+  }
+}
+
 
 
 
