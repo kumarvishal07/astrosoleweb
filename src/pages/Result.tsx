@@ -9,7 +9,7 @@ import {
   Loader,
   Bell,
   ChevronRight,
-  Menu,
+  ChevronLeft,
   Compass
 } from 'lucide-react';
 import { generateDetailedReading } from '../data/podomancy';
@@ -430,7 +430,7 @@ export default function Result() {
       {/* Top Navbar Header */}
       <header className="app-header" style={{ marginBottom: '18px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <Menu color="var(--accent)" size={22} style={{ cursor: 'pointer' }} onClick={() => navigate('/')} />
+          <ChevronLeft color="var(--accent)" size={22} style={{ cursor: 'pointer' }} onClick={() => navigate(-1)} />
           <h1 className="logo-text" style={{ fontSize: '20px', fontFamily: 'Cinzel', letterSpacing: '1px' }}>
             {language === 'hi' ? "पैर विश्लेषण" : "Your Foot Analysis"}
           </h1>
@@ -477,14 +477,14 @@ export default function Result() {
             </p>
 
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'baseline', gap: '6px', marginBottom: '24px' }}>
-              <span style={{ fontSize: '32px', fontWeight: 'bold', color: 'var(--accent)' }}>₹49</span>
+              <span style={{ fontSize: '32px', fontWeight: 'bold', color: 'var(--accent)' }}>₹0</span>
               <span style={{ fontSize: '14px', color: 'var(--text-secondary)', textDecoration: 'line-through' }}>₹499</span>
-              <span style={{ fontSize: '12px', color: 'yellowgreen', fontWeight: 'bold' }}>(90% OFF)</span>
+              <span style={{ fontSize: '12px', color: 'yellowgreen', fontWeight: 'bold' }}>(100% OFF)</span>
             </div>
 
             <button 
               className="btn" 
-              onClick={() => setShowPaymentModal(true)}
+              onClick={() => setIsUnlocked(true)}
               style={{ 
                 width: '100%', 
                 maxWidth: '300px', 
@@ -1199,7 +1199,7 @@ export default function Result() {
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
                 <span style={{ color: 'var(--text-secondary)' }}>{language === 'hi' ? "राशि:" : "Amount:"}</span>
-                <span style={{ color: 'var(--accent)', fontWeight: 'bold' }}>₹49.00</span>
+                <span style={{ color: 'var(--accent)', fontWeight: 'bold' }}>₹0.00</span>
               </div>
             </div>
 

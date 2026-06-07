@@ -141,7 +141,7 @@ export default function Scan() {
     const trimmedName = name.trim();
     const trimmedMobile = mobile.trim();
     const trimmedEmail = email.trim();
-    const trimmedAddress = address.trim();
+    // const trimmedAddress = address.trim();
 
     const newErrors: ErrorState = {};
 
@@ -173,11 +173,11 @@ export default function Scan() {
 
     setErrors({});
 
-    // Send lead details to WhatsApp link
-    const leadMessage = `New Lead from AstroSole:\nName: ${trimmedName}\nMobile: ${trimmedMobile}\nEmail: ${trimmedEmail || 'N/A'}\nAddress: ${trimmedAddress || 'N/A'}`;
-    const whatsappUrl = `https://wa.me/917003891953?text=${encodeURIComponent(leadMessage)}`;
-
-    window.open(whatsappUrl, '_blank');
+    // Send lead details to WhatsApp link (disabled)
+    // const leadMessage = `New Lead from AstroSole:\nName: ${trimmedName}\nMobile: ${trimmedMobile}\nEmail: ${trimmedEmail || 'N/A'}\nAddress: ${trimmedAddress || 'N/A'}`;
+    // const whatsappUrl = `https://wa.me/917003891953?text=${encodeURIComponent(leadMessage)}`;
+    // window.open(whatsappUrl, '_blank');
+    
     setIsFormCompleted(true);
   };
 
@@ -436,8 +436,16 @@ export default function Scan() {
     <div className="container">
       {/* Top Navbar Header */}
       <header className="app-header">
-        <div className="logo-container" style={{ cursor: 'pointer' }} onClick={() => navigate('/')}>
-          <img src={appsoleLogo} alt="AstroSole Logo" style={{ height: '50px', width: 'auto', objectFit: 'contain' }} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <ChevronLeft 
+            color="var(--accent)" 
+            size={22} 
+            style={{ cursor: 'pointer' }} 
+            onClick={() => navigate(-1)} 
+          />
+          <div className="logo-container" style={{ cursor: 'pointer' }} onClick={() => navigate('/')}>
+            <img src={appsoleLogo} alt="AstroSole Logo" style={{ height: '50px', width: 'auto', objectFit: 'contain' }} />
+          </div>
         </div>
         <button className="lang-toggle-btn" onClick={() => navigate('/')}>
           {language === 'hi' ? 'मुख्य पृष्ठ' : 'Go Home'}
