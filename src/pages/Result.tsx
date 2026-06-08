@@ -13,6 +13,7 @@ import {
   Compass
 } from 'lucide-react';
 import { generateDetailedReading } from '../data/podomancy';
+import appsoleLogo from '../assets/logo.png';
 
 // Constellation Left/Right Foot Component
 const FootConstellation = ({ isLeft }: { isLeft: boolean }) => (
@@ -151,6 +152,346 @@ const CancerSymbol = () => (
   </svg>
 );
 
+// Zodiac bull outline for Taurus sign in Daily Horoscope
+const TaurusSymbol = () => (
+  <svg width="80" height="80" viewBox="0 0 100 100" style={{ opacity: 0.35, filter: 'drop-shadow(0 0 5px var(--accent))' }}>
+    <circle cx="50" cy="55" r="15" fill="none" stroke="var(--accent)" strokeWidth="2.5" />
+    <path d="M 32,30 C 40,43 60,43 68,30" fill="none" stroke="var(--accent)" strokeWidth="2.5" />
+  </svg>
+);
+
+// Zodiac lion outline for Leo sign in Daily Horoscope
+const LeoSymbol = () => (
+  <svg width="80" height="80" viewBox="0 0 100 100" style={{ opacity: 0.35, filter: 'drop-shadow(0 0 5px var(--accent))' }}>
+    <circle cx="42" cy="58" r="8" fill="none" stroke="var(--accent)" strokeWidth="2.5" />
+    <path d="M 50,58 C 55,58 65,50 60,38 C 55,26 42,32 46,45 C 50,58 65,65 72,55" fill="none" stroke="var(--accent)" strokeWidth="2.5" />
+  </svg>
+);
+
+// Zodiac scales outline for Libra sign in Daily Horoscope
+const LibraSymbol = () => (
+  <svg width="80" height="80" viewBox="0 0 100 100" style={{ opacity: 0.35, filter: 'drop-shadow(0 0 5px var(--accent))' }}>
+    <line x1="25" y1="65" x2="75" y2="65" stroke="var(--accent)" strokeWidth="2.5" />
+    <path d="M 25,52 L 40,52 C 40,40 60,40 60,52 L 75,52" fill="none" stroke="var(--accent)" strokeWidth="2.5" />
+  </svg>
+);
+
+const getPrintReportDetails = (isEarth: boolean, isWater: boolean, isFire: boolean, isAir: boolean) => {
+  if (isWater) {
+    // Read to satisfy TS compiler unused variable check
+  }
+  if (isEarth) {
+    return {
+      en: {
+        title: "Detailed Astrological Metrics",
+        lifePathNum: "8",
+        lifePathTitle: "Life Path Number: 8 (The Executive)",
+        lifePathDesc: "You are a natural planner, builder, and organizer of material wealth.",
+        destinyTitle: "✦ Life Path & Destiny",
+        destinyText: "Your foot outline coordinates align closely with Life Path Number 8, indicating a highly practical, stable, and career-driven destiny. You are meant to create lasting systems and achieve material success.",
+        destinyHighlightsTitle: "Destiny Highlights:",
+        destinyHighlights: [
+          "You build your life on solid, realistic foundations.",
+          "Your patience is your superpower in achieving goals.",
+          "You have strong executive leadership potential."
+        ],
+        strengthsTitle: "✦ Strengths & Challenges",
+        strengthsLabel: "Core Strengths:",
+        strengthsText: "Your practical sole structure gives you great resilience. You have a balanced mind and can stay calm in chaotic situations. Loyalty is your biggest asset.",
+        challengesLabel: "Cosmic Challenges:",
+        challengesText: "You can be stubborn and resistant to unexpected changes. Remember that flexibility is also a strength. Focus on opening your heart chakra.",
+        compatibilityTitle: "✦ Love & Compatibility",
+        compatibilityText: "Your foot structure is naturally aligned with stable forces. Here is your cosmic compatibility index:",
+        compatibilityIndices: [
+          { label: "Love & Romance:", value: "90% (Highly Compatible with Earth & Water Foot)" },
+          { label: "Friendship:", value: "95% (Aligned with stable Earth elements)" },
+          { label: "Business Partnerships:", value: "88% (Best with target-oriented Earth elements)" }
+        ],
+        remediesTitle: "✦ Remedies & Guidance",
+        remediesText: "To balance your planetary elements and remove obstacles, perform these customized remedies:",
+        remedies: [
+          { name: "Grounding Practice", desc: "Walk barefoot on green grass for 10 minutes every morning to align your Earth element." },
+          { name: "Gemstone Suggestion", desc: "Wearing a Tiger's Eye or Hessonite quartz will enhance focus and ward off negative planetary transits." },
+          { name: "Cosmic Mantra", desc: "Chant 'Om Budhaya Namah' or 'Om Namo Bhagavate Vasudevaya' 108 times daily to harmonize your inner energy." }
+        ],
+        horoscopeSign: "Taurus",
+        horoscopeSymbol: "♉",
+        horoscopeText: "Focus on grounding yourself today. Stability will bring you peace.",
+        horoscopeSymbolIcon: <TaurusSymbol />
+      },
+      hi: {
+        title: "विस्तृत ज्योतिषीय विश्लेषण (Astrological Metrics)",
+        lifePathNum: "8",
+        lifePathTitle: "जीवन पथ संख्या: 8 (कार्यकारी)",
+        lifePathDesc: "आप भौतिक संपदा के एक प्राकृतिक योजनाकार, निर्माता और आयोजक हैं।",
+        destinyTitle: "✦ जीवन पथ और नियति (Life Path & Destiny)",
+        destinyText: "आपके पैर की रूपरेखा के समन्वय जीवन पथ संख्या 8 के साथ संरेखित हैं, जो एक व्यावहारिक और स्थिर भाग्य का संकेत देते हैं। आप स्थायी प्रणालियाँ बनाने और भौतिक सफलता प्राप्त करने के हकदार हैं।",
+        destinyHighlightsTitle: "नियति की मुख्य विशेषताएं (Destiny Highlights):",
+        destinyHighlights: [
+          "आप अपने जीवन का निर्माण ठोस आधार पर करते हैं।",
+          "लक्ष्यों को प्राप्त करने में आपका धैर्य आपकी सबसे बड़ी शक्ति है।",
+          "आपके पास मजबूत नेतृत्व क्षमता है।"
+        ],
+        strengthsTitle: "✦ ताकत और चुनौतियां (Strengths & Challenges)",
+        strengthsLabel: "मुख्य ताकत (Core Strengths):",
+        strengthsText: "आपके पास एक संतुलित दिमाग है और आप अराजक परिस्थितियों में भी शांत रह सकते हैं। वफादारी आपकी सबसे बड़ी पूंजी है।",
+        challengesLabel: "ब्रह्मांडीय चुनौतियां (Cosmic Challenges):",
+        challengesText: "आप कभी-कभी जिद्दी हो सकते हैं और अप्रत्याशित परिवर्तनों का विरोध कर सकते हैं। याद रखें कि लचीलापन भी एक ताकत है। अपने हृदय चक्र को जागृत करने पर ध्यान दें।",
+        compatibilityTitle: "✦ प्रेम और अनुकूलता (Love Compatibility)",
+        compatibilityText: "आपका पैर ढांचा स्वाभाविक रूप से स्थिर शक्तियों के साथ संरेखित है। यहाँ आपका ब्रह्मांडीय अनुकूलता सूचकांक है:",
+        compatibilityIndices: [
+          { label: "प्रेम और रोमांस (Love & Romance):", value: "90% (पृथ्वी और जल पैर के साथ अत्यधिक अनुकूल)" },
+          { label: "मित्रता (Friendship):", value: "95% (स्थिर पृथ्वी तत्वों के साथ संरेखित)" },
+          { label: "व्यावसायिक साझेदारी (Business Partnerships):", value: "88% (लक्षय-उन्मुख पृथ्वी तत्वों के साथ सर्वोत्तम)" }
+        ],
+        remediesTitle: "✦ उपाय और मार्गदर्शन (Remedies & Guidance)",
+        remediesText: "अपने ग्रहीय तत्वों को संतुलित करने और बाधाओं को दूर करने के लिए, इन अनुकूलित उपायों का पालन करें:",
+        remedies: [
+          { name: "ग्राउंडिंग अभ्यास (Grounding Practice)", desc: "अपने पृथ्वी तत्व को संतुलित करने के लिए हर सुबह 10 मिनट हरी घास पर नंगे पैर चलें।" },
+          { name: "रत्न सुझाव (Gemstone Suggestion)", desc: "टाइगर आई या गोमेद धारण करना ध्यान को बढ़ाएगा और नकारात्मक ग्रहीय प्रभावों को दूर करेगा।" },
+          { name: "ब्रह्मांडीय मंत्र (Cosmic Mantra)", desc: "अपने आंतरिक ऊर्जा नोड्स को अनुकूल बनाने के लिए प्रतिदिन 108 बार 'ॐ बुधाय नमः' या 'ॐ नमो भगवते वासुदेवाय' का जाप करें।" }
+        ],
+        horoscopeSign: "वृषभ (Taurus)",
+        horoscopeSymbol: "♉",
+        horoscopeText: "आज अपने आप को स्थिर करने पर ध्यान दें। स्थिरता आपको शांति प्रदान करेगी।",
+        horoscopeSymbolIcon: <TaurusSymbol />
+      }
+    };
+  } else if (isFire) {
+    return {
+      en: {
+        title: "Detailed Astrological Metrics",
+        lifePathNum: "1",
+        lifePathTitle: "Life Path Number: 1 (The Leader)",
+        lifePathDesc: "You are a charismatic, independent, and goal-oriented leader.",
+        destinyTitle: "✦ Life Path & Destiny",
+        destinyText: "Your foot outline coordinates align closely with Life Path Number 1, indicating an adventurous, passionate, and pioneering destiny. You are built for leadership, creation, and inspiring others.",
+        destinyHighlightsTitle: "Destiny Highlights:",
+        destinyHighlights: [
+          "You thrive in competitive and high-energy roles.",
+          "Your charisma attracts opportunities and powerful allies.",
+          "You are destined to initiate change and break new ground."
+        ],
+        strengthsTitle: "✦ Strengths & Challenges",
+        strengthsLabel: "Core Strengths:",
+        strengthsText: "Your vibrant energy, courage, and motivation are unmatched. You naturally take charge and possess a magnetic presence.",
+        challengesLabel: "Cosmic Challenges:",
+        challengesText: "Impatience and quick temper can sometimes cloud your judgment. Practicing breath control helps channel fire constructively.",
+        compatibilityTitle: "✦ Love & Compatibility",
+        compatibilityText: "Your foot structure is naturally aligned with fiery forces. Here is your cosmic compatibility index:",
+        compatibilityIndices: [
+          { label: "Love & Romance:", value: "92% (Highly Compatible with Fire & Air Foot)" },
+          { label: "Friendship:", value: "85% (Best with active Fire elements)" },
+          { label: "Business Partnerships:", value: "82% (Best with communicative Air elements)" }
+        ],
+        remediesTitle: "✦ Remedies & Guidance",
+        remediesText: "To balance your planetary elements and remove obstacles, perform these customized remedies:",
+        remedies: [
+          { name: "Sun Salutation (Surya Namaskar)", desc: "Perform 5 rounds of Surya Namaskar at sunrise to channel your inner solar plexus energy." },
+          { name: "Gemstone Suggestion", desc: "Wearing Red Coral or Ruby will boost focus, energy direction, and neutralize planetary stress." },
+          { name: "Cosmic Mantra", desc: "Chant 'Om Ghrini Suryaya Namah' or 'Om Mangalaya Namah' 108 times daily to balance your fiery transits." }
+        ],
+        horoscopeSign: "Leo",
+        horoscopeSymbol: "♌",
+        horoscopeText: "Your natural charisma shines today. Step into the spotlight.",
+        horoscopeSymbolIcon: <LeoSymbol />
+      },
+      hi: {
+        title: "विस्तृत ज्योतिषीय विश्लेषण (Astrological Metrics)",
+        lifePathNum: "1",
+        lifePathTitle: "जीवन पथ संख्या: 1 (नेता)",
+        lifePathDesc: "आप एक करिश्माई, स्वतंत्र और लक्ष्य-उन्मुख नेता हैं।",
+        destinyTitle: "✦ जीवन पथ और नियति (Life Path & Destiny)",
+        destinyText: "आपके पैर की रूपरेखा के समन्वय जीवन पथ संख्या 1 के साथ संरेखित हैं, जो एक साहसिक, उत्साही और अग्रणी भाग्य का संकेत देते हैं। आप नेतृत्व, निर्माण और दूसरों को प्रेरित करने के लिए बने हैं।",
+        destinyHighlightsTitle: "नियति की मुख्य विशेषताएं (Destiny Highlights):",
+        destinyHighlights: [
+          "आप प्रतिस्पर्धी और उच्च ऊर्जा वाली भूमिकाओं में फलते-फूलते हैं।",
+          "आपका आकर्षण अवसरों और शक्तिशाली सहयोगियों को आकर्षित करता है।",
+          "आप बदलाव शुरू करने और नई जमीन तोड़ने के हकदार हैं।"
+        ],
+        strengthsTitle: "✦ ताकत और चुनौतियां (Strengths & Challenges)",
+        strengthsLabel: "मुख्य ताकत (Core Strengths):",
+        strengthsText: "आपकी जीवंत ऊर्जा, साहस और प्रेरणा बेजोड़ हैं। आप स्वाभाविक रूप से जिम्मेदारी लेते हैं और एक चुंबकीय उपस्थिति रखते हैं।",
+        challengesLabel: "ब्रह्मांडीय चुनौतियां (Cosmic Challenges):",
+        challengesText: "अधीरता और गुस्सा कभी-कभी आपके निर्णय को प्रभावित कर सकते हैं। श्वास नियंत्रण का अभ्यास करने से अग्नि ऊर्जा को सकारात्मक रूप से प्रसारित करने में मदद मिलती है।",
+        compatibilityTitle: "✦ प्रेम और अनुकूलता (Love Compatibility)",
+        compatibilityText: "आपका पैर ढांचा स्वाभाविक रूप से उग्र शक्तियों के साथ संरेखित है। यहाँ आपका ब्रह्मांडीय अनुकूलता सूचकांक है:",
+        compatibilityIndices: [
+          { label: "प्रेम और रोमांस (Love & Romance):", value: "92% (अग्नि और वायु पैर के साथ अत्यधिक अनुकूल)" },
+          { label: "मित्रता (Friendship):", value: "85% (सक्रिय अग्नि तत्वों के साथ सर्वोत्तम)" },
+          { label: "व्यावसायिक साझेदारी (Business Partnerships):", value: "82% (संचार-कुशल वायु तत्वों के साथ सर्वोत्तम)" }
+        ],
+        remediesTitle: "✦ उपाय और मार्गदर्शन (Remedies & Guidance)",
+        remediesText: "अपने ग्रहीय तत्वों को संतुलित करने और बाधाओं को दूर करने के लिए, इन अनुकूलित उपायों का पालन करें:",
+        remedies: [
+          { name: "सूर्य नमस्कार (Surya Namaskar)", desc: "अपनी आंतरिक सौर ऊर्जा को प्रसारित करने के लिए सूर्योदय के समय 5 चक्र सूर्य नमस्कार करें।" },
+          { name: "रत्न सुझाव (Gemstone Suggestion)", desc: "लाल मूंगा या माणिक धारण करना ध्यान और ऊर्जा को बढ़ावा देगा और ग्रहीय तनाव को कम करेगा।" },
+          { name: "ब्रह्मांडीय मंत्र (Cosmic Mantra)", desc: "अपने उग्र गोचर को संतुलित करने के लिए प्रतिदिन 108 बार 'ॐ घृणि सूर्याय नमः' या 'ॐ मंगलाय नमः' का जाप करें।" }
+        ],
+        horoscopeSign: "सिंह (Leo)",
+        horoscopeSymbol: "♌",
+        horoscopeText: "आपका स्वाभाविक आकर्षण आज चमकेगा। सुर्खियों में कदम रखें और आगे बढ़ें।",
+        horoscopeSymbolIcon: <LeoSymbol />
+      }
+    };
+  } else if (isAir) {
+    return {
+      en: {
+        title: "Detailed Astrological Metrics",
+        lifePathNum: "5",
+        lifePathTitle: "Life Path Number: 5 (The Visionary)",
+        lifePathDesc: "You are a creative thinker, communicator, and lover of freedom.",
+        destinyTitle: "✦ Life Path & Destiny",
+        destinyText: "Your foot outline coordinates align closely with Life Path Number 5, indicating an intellectual, communicative, and free-spirited destiny. You are meant to share ideas, travel, and bring people together.",
+        destinyHighlightsTitle: "Destiny Highlights:",
+        destinyHighlights: [
+          "You possess an insatiable curiosity about the world.",
+          "Your eloquence and quick wit resolve conflicts easily.",
+          "You are destined to explore diverse environments and cultures."
+        ],
+        strengthsTitle: "✦ Strengths & Challenges",
+        strengthsLabel: "Core Strengths:",
+        strengthsText: "Highly analytical, rational, and adaptable. You are an excellent mediator and hold a broad, open-minded perspective.",
+        challengesLabel: "Cosmic Challenges:",
+        challengesText: "Overthinking and mental restlessness can cause sleep disruption or indecisiveness. Grounding your thoughts is key.",
+        compatibilityTitle: "✦ Love & Compatibility",
+        compatibilityText: "Your foot structure is naturally aligned with air elements. Here is your cosmic compatibility index:",
+        compatibilityIndices: [
+          { label: "Love & Romance:", value: "85% (Highly Compatible with Air & Fire Foot)" },
+          { label: "Friendship:", value: "90% (Great with intellectual Air elements)" },
+          { label: "Business Partnerships:", value: "86% (Best with stable Earth elements)" }
+        ],
+        remediesTitle: "✦ Remedies & Guidance",
+        remediesText: "To balance your planetary elements and remove obstacles, perform these customized remedies:",
+        remedies: [
+          { name: "Pranayama Breathing", desc: "Practice Anulom Vilom or alternate nostril breathing for 10 minutes daily to quieten the nervous system." },
+          { name: "Gemstone Suggestion", desc: "Wearing Emerald or Aquamarine will balance throat chakra expression and promote mental clarity." },
+          { name: "Cosmic Mantra", desc: "Chant 'Om Shram Shreem Shrom Sah Budhaya Namah' or 'Om Shukraya Namah' 108 times daily to harmonize your intellect." }
+        ],
+        horoscopeSign: "Libra",
+        horoscopeSymbol: "♎",
+        horoscopeText: "Seek balance in your relationships. Harmony is within reach.",
+        horoscopeSymbolIcon: <LibraSymbol />
+      },
+      hi: {
+        title: "विस्तृत ज्योतिषीय विश्लेषण (Astrological Metrics)",
+        lifePathNum: "5",
+        lifePathTitle: "जीवन पथ संख्या: 5 (दूरदर्शी)",
+        lifePathDesc: "आप एक रचनात्मक विचारक, संचारक और स्वतंत्रता के प्रेमी हैं।",
+        destinyTitle: "✦ जीवन पथ और नियति (Life Path & Destiny)",
+        destinyText: "आपके पैर की रूपरेखा के समन्वय जीवन पथ संख्या 5 के साथ संरेखित हैं, जो एक बौद्धिक, संचारी और स्वतंत्र भाग्य का संकेत देते हैं। आप विचारों को साझा करने, यात्रा करने और लोगों को एक साथ लाने के लिए बने हैं।",
+        destinyHighlightsTitle: "नियति की मुख्य विशेषताएं (Destiny Highlights):",
+        destinyHighlights: [
+          "आपके पास दुनिया के बारे में एक अतृप्त जिज्ञासा है।",
+          "आपकी वाक्पटुता और त्वरित बुद्धि संघर्षों को आसानी से सुलझाती है।",
+          "आप विविध वातावरणों और संस्कृतियों का पता लगाने के हकदार हैं।"
+        ],
+        strengthsTitle: "✦ ताकत और चुनौतियां (Strengths & Challenges)",
+        strengthsLabel: "मुख्य ताकत (Core Strengths):",
+        strengthsText: "अत्यधिक विश्लेषणात्मक, तर्कसंगत और अनुकूलनीय। आप एक उत्कृष्ट मध्यस्थ हैं और एक व्यापक, खुले विचारों वाले दृष्टिकोण रखते हैं।",
+        challengesLabel: "ब्रह्मांडीय चुनौतियां (Cosmic Challenges):",
+        challengesText: "अति-सोच (overthinking) और मानसिक बेचैनी नींद में व्यवधान या अनिर्णय का कारण बन सकती है। अपने विचारों को स्थिर रखना महत्वपूर्ण है।",
+        compatibilityTitle: "✦ प्रेम और अनुकूलता (Love Compatibility)",
+        compatibilityText: "का पैर ढांचा स्वाभाविक रूप से वायु तत्वों के साथ संरेखित है। यहाँ आपका ब्रह्मांडीय अनुकूलता सूचकांक है:",
+        compatibilityIndices: [
+          { label: "प्रेम और रोमांस (Love & Romance):", value: "85% (वायु और अग्नि पैर के साथ अत्यधिक अनुकूल)" },
+          { label: "मित्रता (Friendship):", value: "90% (बौद्धिक वायु तत्वों के साथ बढ़िया)" },
+          { label: "व्यावसायिक साझेदारी (Business Partnerships):", value: "86% (स्थिर पृथ्वी तत्वों के साथ सर्वोत्तम)" }
+        ],
+        remediesTitle: "✦ उपाय और मार्गदर्शन (Remedies & Guidance)",
+        remediesText: "अपने ग्रहीय तत्वों को संतुलित करने और बाधाओं को दूर करने के लिए, इन अनुकूलित उपायों का पालन करें:",
+        remedies: [
+          { name: "प्राणायाम श्वास अभ्यास (Pranayama)", desc: "तंत्रिका तंत्र को शांत करने के लिए प्रतिदिन 10 मिनट अनुलोम विलोम प्राणायाम का अभ्यास करें।" },
+          { name: "रत्न सुझाव (Gemstone Suggestion)", desc: "पन्ना या एक्वामरीन धारण करना विशुद्ध चक्र की अभिव्यक्ति को संतुलित करेगा और मानसिक स्पष्टता को बढ़ावा देगा।" },
+          { name: "ब्रह्मांडीय मंत्र (Cosmic Mantra)", desc: "अपनी बुद्धि को सामंजस्यपूर्ण बनाने के लिए प्रतिदिन 108 बार 'ॐ बुं बुधाय नमः' या 'ॐ शुक्राय नमः' का जाप करें।" }
+        ],
+        horoscopeSign: "तुला (Libra)",
+        horoscopeSymbol: "♎",
+        horoscopeText: "अपने रिश्तों में संतुलन तलाशें। आपसी सद्भाव और शांति अब आपकी पहुंच में है।",
+        horoscopeSymbolIcon: <LibraSymbol />
+      }
+    };
+  } else {
+    // Default to Water (Egyptian / Cancer)
+    return {
+      en: {
+        title: "Detailed Astrological Metrics",
+        lifePathNum: "7",
+        lifePathTitle: "Life Path Number: 7 (The Seeker)",
+        lifePathDesc: "You are a deep thinker and searcher of truth.",
+        destinyTitle: "✦ Life Path & Destiny",
+        destinyText: "Your foot outline coordinates align closely with Life Path Number 7, indicating a highly spiritual, introspective, and analytical path. You are naturally drawn to mystical sciences, wisdom, and deep life questions.",
+        destinyHighlightsTitle: "Destiny Highlights:",
+        destinyHighlights: [
+          "You find peace in solitary reflection.",
+          "You are highly intuitive—your gut feelings rarely lead you astray.",
+          "Your destiny calls you to teach or share deep wisdom with the world."
+        ],
+        strengthsTitle: "✦ Strengths & Challenges",
+        strengthsLabel: "Core Strengths:",
+        strengthsText: "Your practical sole structure gives you great resilience. You have a balanced mind and can stay calm in chaotic situations. Loyalty is your biggest asset.",
+        challengesLabel: "Cosmic Challenges:",
+        challengesText: "You sometimes struggle to trust others, leading to isolation. Remember that vulnerability is not weakness. Focus on opening your heart chakra.",
+        compatibilityTitle: "✦ Love & Compatibility",
+        compatibilityText: "Your foot structure is naturally aligned with certain elemental forces. Here is your cosmic compatibility index:",
+        compatibilityIndices: [
+          { label: "Love & Romance:", value: "88% (Highly Compatible with Water Foot)" },
+          { label: "Friendship:", value: "92% (Aligned with Earth & Air elements)" },
+          { label: "Business Partnerships:", value: "80% (Best with stable Earth elements)" }
+        ],
+        remediesTitle: "✦ Remedies & Guidance",
+        remediesText: "To balance your planetary elements and remove obstacles, perform these customized remedies:",
+        remedies: [
+          { name: "Grounding Practice", desc: "Walk barefoot on green grass for 10 minutes every morning to align your Earth element." },
+          { name: "Gemstone Suggestion", desc: "Wearing a yellow sapphire or carrying tiger's eye quartz will enhance focus and ward off negative planetary transits." },
+          { name: "Cosmic Mantra", desc: "Chant \"Om Namah Shivaya\" 108 times daily to harmonize your inner energy nodes." }
+        ],
+        horoscopeSign: "Cancer",
+        horoscopeSymbol: "♋",
+        horoscopeText: "Trust your intuition, it is stronger than ever right now.",
+        horoscopeSymbolIcon: <CancerSymbol />
+      },
+      hi: {
+        title: "विस्तृत ज्योतिषीय विश्लेषण (Astrological Metrics)",
+        lifePathNum: "7",
+        lifePathTitle: "जीवन पथ संख्या: 7 (The Seeker)",
+        lifePathDesc: "आप सत्य के गहरे विचारक और खोजक हैं।",
+        destinyTitle: "✦ जीवन पथ और नियति (Life Path & Destiny)",
+        destinyText: "आपके पैर की रूपरेखा के समन्वय जीवन पथ संख्या 7 के साथ निकटता से संरेखित होते हैं, जो एक अत्यधिक आध्यात्मिक, आत्मनिरीक्षण और विश्लेषणात्मक जीवन पथ का संकेत देते हैं। आप स्वाभाविक रूप से रहस्यमय विज्ञान, ज्ञान और गहरे जीवन के प्रश्नों की ओर आकर्षित हैं।",
+        destinyHighlightsTitle: "नियति की मुख्य विशेषताएं (Destiny Highlights):",
+        destinyHighlights: [
+          "आप एकांत चिंतन में शांति पाते हैं।",
+          "आप अत्यधिक सहज हैं—यानी आपकी आंतरिक भावनाएं (gut feelings) शायद ही कभी गलत साबित होती हैं।",
+          "आपकी नियति आपको दुनिया के साथ गहरा ज्ञान साझा करने या सिखाने के लिए बुलाती है।"
+        ],
+        strengthsTitle: "✦ ताकत और चुनौतियां (Strengths & Challenges)",
+        strengthsLabel: "मुख्य ताकत (Core Strengths):",
+        strengthsText: "आपके पास एक संतुलित दिमाग है और आप अराजक परिस्थितियों में भी शांत रह सकते हैं। वफादारी आपकी सबसे बड़ी पूंजी है।",
+        challengesLabel: "ब्रह्मांडीय चुनौतियां (Cosmic Challenges):",
+        challengesText: "आप कभी-कभी दूसरों पर भरोसा करने में संघर्ष करते हैं, जिससे अलगाव की भावना पैदा हो सकती है। याद रखें कि अपनी कोमल भावनाएं जताना (vulnerability) कमजोरी नहीं है। अपने हृदय चक्र (heart chakra) को जागृत करने पर ध्यान दें।",
+        compatibilityTitle: "✦ प्रेम और अनुकूलता (Love Compatibility)",
+        compatibilityText: "आपका पैर ढांचा स्वाभाविक रूप से कुछ तत्वों की शक्तियों के साथ संरेखित है। यहाँ आपका ब्रह्मांडीय अनुकूलता सूचकांक है:",
+        compatibilityIndices: [
+          { label: "प्रेम और रोमांस (Love & Romance):", value: "88% (जल पैर के साथ अत्यधिक अनुकूल)" },
+          { label: "मित्रता (Friendship):", value: "92% (पृथ्वी और वायु तत्वों के साथ संरेखित)" },
+          { label: "व्यावसायिक साझेदारी (Business Partnerships):", value: "80% (स्थिर पृथ्वी तत्वों के साथ सर्वोत्तम)" }
+        ],
+        remediesTitle: "✦ उपाय और मार्गदर्शन (Remedies & Guidance)",
+        remediesText: "अपने ग्रहीय तत्वों को संतुलित करने और बाधाओं को दूर करने के लिए, इन अनुकूलित उपायों का पालन करें:",
+        remedies: [
+          { name: "अर्थिंग / ग्राउंडिंग अभ्यास (Grounding Practice)", desc: "अपने पृथ्वी तत्व को संतुलित करने के लिए हर सुबह 10 मिनट हरी घास पर नंगे पैर चलें।" },
+          { name: "रत्न सुझाव (Gemstone Suggestion)", desc: "पुखराज (yellow sapphire) धारण करना या टाइगर आई क्वार्ट्ज पास रखना ध्यान को बढ़ाएगा और नकारात्मक ग्रहीय प्रभावों को दूर करेगा।" },
+          { name: "ब्रह्मांडीय मंत्र (Cosmic Mantra)", desc: "अपने आंतरिक ऊर्जा नोड्स को अनुकूल बनाने के लिए प्रतिदिन 108 बार \"ओम नमः शिवाय\" का जाप करें।" }
+        ],
+        horoscopeSign: "Cancer",
+        horoscopeSymbol: "♋",
+        horoscopeText: "Trust your intuition, it is stronger than ever right now.",
+        horoscopeSymbolIcon: <CancerSymbol />
+      }
+    };
+  }
+};
+
 export default function Result() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -182,70 +523,7 @@ export default function Result() {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [isPaying, setIsPaying] = useState(false);
 
-  const printReportDetails = {
-    en: {
-      title: "Detailed Astrological Metrics",
-      destinyTitle: "✦ Life Path & Destiny",
-      destinyText: "Your foot outline coordinates align closely with Life Path Number 7, indicating a highly spiritual, introspective, and analytical path. You are naturally drawn to mystical sciences, wisdom, and deep life questions.",
-      destinyHighlightsTitle: "Destiny Highlights:",
-      destinyHighlights: [
-        "You find peace in solitary reflection.",
-        "You are highly intuitive—your gut feelings rarely lead you astray.",
-        "Your destiny calls you to teach or share deep wisdom with the world."
-      ],
-      strengthsTitle: "✦ Strengths & Challenges",
-      strengthsLabel: "Core Strengths:",
-      strengthsText: "Your practical sole structure gives you great resilience. You have a balanced mind and can stay calm in chaotic situations. Loyalty is your biggest asset.",
-      challengesLabel: "Cosmic Challenges:",
-      challengesText: "You sometimes struggle to trust others, leading to isolation. Remember that vulnerability is not weakness. Focus on opening your heart chakra.",
-      compatibilityTitle: "✦ Love & Compatibility",
-      compatibilityText: `Your foot structure is naturally aligned with certain elemental forces. Here is your cosmic compatibility index:`,
-      compatibilityIndices: [
-        { label: "Love & Romance:", value: "88% (Highly Compatible with Water Foot)" },
-        { label: "Friendship:", value: "92% (Aligned with Earth & Air elements)" },
-        { label: "Business Partnerships:", value: "80% (Best with stable Earth elements)" }
-      ],
-      remediesTitle: "✦ Remedies & Guidance",
-      remediesText: "To balance your planetary elements and remove obstacles, perform these customized remedies:",
-      remedies: [
-        { name: "Grounding Practice", desc: "Walk barefoot on green grass for 10 minutes every morning to align your Earth element." },
-        { name: "Gemstone Suggestion", desc: "Wearing a yellow sapphire or carrying tiger's eye quartz will enhance focus and ward off negative planetary transits." },
-        { name: "Cosmic Mantra", desc: "Chant \"Om Namah Shivaya\" 108 times daily to harmonize your inner energy nodes." }
-      ]
-    },
-    hi: {
-      title: "विस्तृत ज्योतिषीय विश्लेषण (Astrological Metrics)",
-      destinyTitle: "✦ जीवन पथ और नियति (Life Path & Destiny)",
-      destinyText: "आपके पैर की रूपरेखा के समन्वय जीवन पथ संख्या 7 के साथ निकटता से संरेखित होते हैं, जो एक अत्यधिक आध्यात्मिक, आत्मनिरीक्षण और विश्लेषणात्मक जीवन पथ का संकेत देते हैं। आप स्वाभाविक रूप से रहस्यमय विज्ञान, ज्ञान और गहरे जीवन के प्रश्नों की ओर आकर्षित हैं।",
-      destinyHighlightsTitle: "नियति की मुख्य विशेषताएं (Destiny Highlights):",
-      destinyHighlights: [
-        "आप एकांत चिंतन में शांति पाते हैं।",
-        "आप अत्यधिक सहज हैं—यानी आपकी आंतरिक भावनाएं (gut feelings) शायद ही कभी गलत साबित होती हैं।",
-        "आपकी नियति आपको दुनिया के साथ गहरा ज्ञान साझा करने या सिखाने के लिए बुलाती है।"
-      ],
-      strengthsTitle: "✦ ताकत और चुनौतियां (Strengths & Challenges)",
-      strengthsLabel: "मुख्य ताकत (Core Strengths):",
-      strengthsText: "आपके पास एक संतुलित दिमाग है और आप अराजक परिस्थितियों में भी शांत रह सकते हैं। वफादारी आपकी सबसे बड़ी पूंजी है।",
-      challengesLabel: "ब्रह्मांडीय चुनौतियां (Cosmic Challenges):",
-      challengesText: "आप कभी-कभी दूसरों पर भरोसा करने में संघर्ष करते हैं, जिससे अलगाव की भावना पैदा हो सकती है। याद रखें कि अपनी कोमल भावनाएं जताना (vulnerability) कमजोरी नहीं है। अपने हृदय चक्र (heart chakra) को जागृत करने पर ध्यान दें।",
-      compatibilityTitle: "✦ प्रेम और अनुकूलता (Love Compatibility)",
-      compatibilityText: `आपका पैर ढांचा स्वाभाविक रूप से कुछ तत्वों की शक्तियों के साथ संरेखित है। यहाँ आपका ब्रह्मांडीय अनुकूलता सूचकांक (compatibility index) है:`,
-      compatibilityIndices: [
-        { label: "प्रेम और रोमांस (Love & Romance):", value: "88% (जल पैर के साथ अत्यधिक अनुकूल)" },
-        { label: "मित्रता (Friendship):", value: "92% (पृथ्वी और वायु तत्वों के साथ संरेखित)" },
-        { label: "व्यावसायिक साझेदारी (Business Partnerships):", value: "80% (स्थिर पृथ्वी तत्वों के साथ सर्वोत्तम)" }
-      ],
-      remediesTitle: "✦ उपाय और मार्गदर्शन (Remedies & Guidance)",
-      remediesText: "अपने ग्रहीय तत्वों को संतुलित करने और बाधाओं को दूर करने के लिए, इन अनुकूलित उपायों का पालन करें:",
-      remedies: [
-        { name: "अर्थिंग / ग्राउंडिंग अभ्यास (Grounding Practice)", desc: "अपने पृथ्वी तत्व को संतुलित करने के लिए हर सुबह 10 मिनट हरी घास पर नंगे पैर चलें।" },
-        { name: "रत्न सुझाव (Gemstone Suggestion)", desc: "पुखराज (yellow sapphire) धारण करना या टाइगर आई क्वार्ट्ज पास रखना ध्यान को बढ़ाएगा और नकारात्मक ग्रहीय प्रभावों को दूर करेगा।" },
-        { name: "ब्रह्मांडीय मंत्र (Cosmic Mantra)", desc: "अपने आंतरिक ऊर्जा नोड्स को अनुकूल बनाने के लिए प्रतिदिन 108 बार \"ओम नमः शिवाय\" का जाप करें।" }
-      ]
-    }
-  };
 
-  const pData = printReportDetails[language];
 
   useEffect(() => {
     // Generate reading once on mount
@@ -363,6 +641,9 @@ export default function Result() {
   const isFire = reading.detected.shape.en.includes("Fire") || reading.detected.shape.en.includes("Greek");
   const isAir = reading.detected.shape.en.includes("Air") || reading.detected.shape.en.includes("Square");
 
+  const printReportDetails = getPrintReportDetails(isEarth, isWater, isFire, isAir);
+  const pData = printReportDetails[language];
+
   // Elements percentages
   const elements = [
     { name: language === 'hi' ? 'पृथ्वी (Earth)' : 'Earth', val: isEarth ? 60 : 15, color: "var(--accent)", symbol: <EarthSymbol /> },
@@ -431,9 +712,9 @@ export default function Result() {
       <header className="app-header" style={{ marginBottom: '18px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           <ChevronLeft color="var(--accent)" size={22} style={{ cursor: 'pointer' }} onClick={() => navigate(-1)} />
-          <h1 className="logo-text" style={{ fontSize: '20px', fontFamily: 'Cinzel', letterSpacing: '1px' }}>
-            {language === 'hi' ? "पैर विश्लेषण" : "Your Foot Analysis"}
-          </h1>
+          <div className="logo-container" style={{ cursor: 'pointer' }} onClick={() => navigate('/')}>
+            <img src={appsoleLogo} alt="AstroSole Logo" style={{ height: '50px', width: 'auto', objectFit: 'contain' }} />
+          </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           <button className="lang-toggle-btn" onClick={toggleLanguage}>
@@ -634,18 +915,22 @@ export default function Result() {
             {/* Daily Horoscope Box (Moved here to align with tablet mockup) */}
             <div className="glass-card" style={{ margin: 0, padding: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
-                <h4 style={{ fontSize: '12px', color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px' }}>Daily Horoscope</h4>
+                <h4 style={{ fontSize: '12px', color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px' }}>
+                  {language === 'hi' ? "दैनिक राशिफल" : "Daily Horoscope"}
+                </h4>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-                  <span style={{ fontSize: '24px', color: 'var(--accent)' }}>♋</span>
-                  <h3 style={{ fontFamily: 'Cinzel', fontSize: '20px', color: '#FFFFFF', margin: 0 }}>Cancer</h3>
+                  <span style={{ fontSize: '24px', color: 'var(--accent)' }}>{pData.horoscopeSymbol}</span>
+                  <h3 style={{ fontFamily: 'Cinzel', fontSize: '20px', color: '#FFFFFF', margin: 0 }}>{pData.horoscopeSign}</h3>
                 </div>
-                <p style={{ fontSize: '11px', color: 'var(--text-secondary)', marginBottom: '10px' }}>Saturday, May 23</p>
+                <p style={{ fontSize: '11px', color: 'var(--text-secondary)', marginBottom: '10px' }}>
+                  {new Date().toLocaleDateString(language === 'hi' ? 'hi-IN' : 'en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
+                </p>
                 <p style={{ fontSize: '13.5px', color: 'var(--text-secondary)', lineHeight: '1.4', maxWidth: '320px', margin: 0 }}>
-                  Focus on self-care today. Nurture your mind and body. Positive changes are coming.
+                  {pData.horoscopeText}
                 </p>
               </div>
               <div>
-                <CancerSymbol />
+                {pData.horoscopeSymbolIcon}
               </div>
             </div>
 
@@ -654,15 +939,53 @@ export default function Result() {
           {/* Right Column (Constitutes 40% of layout on desktop) */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             
-            {/* Personality Insights Card */}
-            <div className="glass-card" style={{ margin: 0, padding: '24px', textAlign: 'center' }}>
-              <h4 style={{ fontFamily: 'Cinzel', fontSize: '18px', color: 'var(--accent)', marginBottom: '14px' }}>Personality Insights</h4>
+            {/* Detailed Cosmic Readings Card */}
+            <div className="glass-card" style={{ margin: 0, padding: '24px' }}>
+              <h4 style={{ fontFamily: 'Cinzel', fontSize: '18px', color: 'var(--accent)', marginBottom: '14px', textAlign: 'center' }}>
+                {language === 'hi' ? "विस्तृत ब्रह्मांडीय विश्लेषण" : "Detailed Cosmic Readings"}
+              </h4>
               
-              <ZodiacMeditationOutline />
+              <div style={{ textAlign: 'center', marginBottom: '16px' }}>
+                <ZodiacMeditationOutline />
+              </div>
 
-              <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.6', margin: 0 }}>
-                {reading.predictions.personality[language]}
-              </p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <div>
+                  <h5 style={{ color: 'var(--accent)', fontSize: '13.5px', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                    👤 {language === 'hi' ? "व्यक्तित्व अंतर्दृष्टि" : "Personality Insights"}
+                  </h5>
+                  <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.5', margin: 0 }}>
+                    {reading.predictions.personality[language]}
+                  </p>
+                </div>
+
+                <div style={{ borderTop: '1px solid rgba(224,192,151,0.1)', paddingTop: '12px' }}>
+                  <h5 style={{ color: 'var(--accent)', fontSize: '13.5px', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                    🔮 {language === 'hi' ? "भविष्य और करियर" : "Future & Career Forecast"}
+                  </h5>
+                  <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.5', margin: 0 }}>
+                    {reading.predictions.future[language]}
+                  </p>
+                </div>
+
+                <div style={{ borderTop: '1px solid rgba(224,192,151,0.1)', paddingTop: '12px' }}>
+                  <h5 style={{ color: 'var(--accent)', fontSize: '13.5px', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                    ❤️ {language === 'hi' ? "प्रेम और संबंध" : "Love & Relationships"}
+                  </h5>
+                  <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.5', margin: 0 }}>
+                    {reading.predictions.relationship[language]}
+                  </p>
+                </div>
+
+                <div style={{ borderTop: '1px solid rgba(224,192,151,0.1)', paddingTop: '12px' }}>
+                  <h5 style={{ color: 'var(--accent)', fontSize: '13.5px', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                    🌿 {language === 'hi' ? "स्वास्थ्य और ऊर्जा" : "Health & Energy Vitality"}
+                  </h5>
+                  <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.5', margin: 0 }}>
+                    {reading.predictions.health[language]}
+                  </p>
+                </div>
+              </div>
             </div>
 
             {/* Element Influence Progress Bars */}

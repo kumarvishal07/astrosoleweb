@@ -122,6 +122,28 @@ a {
   box-shadow: 0 0 15px rgba(224, 192, 151, 0.4);
 }
 
+.home-btn {
+  background: rgba(30, 11, 54, 0.8);
+  color: var(--accent);
+  padding: 8px 18px;
+  border-radius: 25px;
+  border: 1px solid var(--accent);
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 8px rgba(224, 192, 151, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.home-btn:hover {
+  background: var(--accent);
+  color: var(--primary);
+  box-shadow: 0 0 15px rgba(224, 192, 151, 0.4);
+}
+
 /* Glassmorphism Mystical Card */
 .glass-card {
   background: var(--card-bg);
@@ -872,6 +894,15 @@ a {
     font-size: 11px !important;
   }
 
+  .home-btn {
+    padding: 6px 10px !important;
+    font-size: 11px !important;
+  }
+  
+  .home-btn span {
+    display: none !important;
+  }
+
   /* Make sure modal content fits on screen */
   .modal-card {
     padding: 20px !important;
@@ -919,6 +950,10 @@ a {
     font-size: 10px !important;
   }
   .lang-toggle-btn {
+    padding: 4px 8px !important;
+    font-size: 10px !important;
+  }
+  .home-btn {
     padding: 4px 8px !important;
     font-size: 10px !important;
   }

@@ -234,8 +234,8 @@ export default function Scan() {
           } else {
             setValidationError(
               language === 'hi'
-                ? "अमान्य छवि: कृपया सटीक ज्योतिषीय विश्लेषण के लिए केवल अपने पैर (तलवा या ऊपर की तरफ) की एक स्पष्ट तस्वीर ही अपलोड करें।"
-                : "Invalid image: Please upload or capture a clear photo of your foot (either sole or top) for accurate astrological analysis."
+                ? "अमान्य छवि: कृपया मानव पैर की एक साफ़ फोटो अपलोड करें।"
+                : "Invalid image: Please upload a clear photo of a human foot."
             );
             if (fileInputRef.current) fileInputRef.current.value = '';
             if (galleryInputRef.current) galleryInputRef.current.value = '';
@@ -355,9 +355,9 @@ export default function Scan() {
       retake: "Retake Photo",
 
       aiErrorTitle: "⚠️ AI Verification Failed",
-      aiRule1: "• Make sure you uploaded a clear, vertical photo of a human foot.",
-      aiRule2: "• Avoid background clutter, shoes, socks, or hands blocking the view.",
-      aiRule3: "• Use good lighting if taking a photo.",
+      aiRule1: "• Upload a clear, vertical photo of a human foot.",
+      aiRule2: "• Avoid shoes, socks, or hands blocking the view.",
+      aiRule3: "• Use clear, bright lighting.",
       clear: "Clear",
       tryAgain: "Try Again",
 
@@ -413,9 +413,9 @@ export default function Scan() {
       retake: "फिर से लें",
 
       aiErrorTitle: "⚠️ एआई सत्यापन विफल",
-      aiRule1: "• सुनिश्चित करें कि आपने मानव पैर की एक स्पष्ट, ऊर्ध्वाधर तस्वीर अपलोड की है।",
-      aiRule2: "• पृष्ठभूमि में अव्यवस्था, जूते, मोज़े या दृश्य को अवरुद्ध करने वाले हाथों से बचें।",
-      aiRule3: "• यदि फोटो ले रहे हैं तो अच्छी रोशनी का उपयोग करें।",
+      aiRule1: "• पैर की एक स्पष्ट, ऊर्ध्वाधर (वर्टिकल) फोटो अपलोड करें।",
+      aiRule2: "• मोज़े, जूते या बाधा डालने वाली चीज़ों से बचें।",
+      aiRule3: "• अच्छी और साफ़ रोशनी का उपयोग करें।",
       clear: "साफ़ करें",
       tryAgain: "पुनः प्रयास करें",
 
@@ -447,9 +447,6 @@ export default function Scan() {
             <img src={appsoleLogo} alt="AstroSole Logo" style={{ height: '50px', width: 'auto', objectFit: 'contain' }} />
           </div>
         </div>
-        <button className="lang-toggle-btn" onClick={() => navigate('/')}>
-          {language === 'hi' ? 'मुख्य पृष्ठ' : 'Go Home'}
-        </button>
       </header>
 
       {/* Hidden inputs */}
@@ -989,37 +986,37 @@ export default function Scan() {
 
               {/* AI Image Verification Hard Error Box */}
               {!imageUri && !isValidating && validationError && (
-                <div className="glass-card" style={{ backgroundColor: 'var(--danger-bg)', borderColor: 'var(--danger)', margin: 0, padding: '20px' }}>
+                <div className="glass-card" style={{ backgroundColor: 'var(--danger-bg)', borderColor: 'var(--danger)', margin: 0, padding: '14px 16px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                    <AlertCircle color="var(--danger)" size={18} />
-                    <h3 style={{ color: 'var(--danger)', fontSize: '15px', fontWeight: 'bold', margin: 0 }}>
+                    <AlertCircle color="var(--danger)" size={16} />
+                    <h3 style={{ color: 'var(--danger)', fontSize: '14px', fontWeight: 'bold', margin: 0 }}>
                       {t.aiErrorTitle}
                     </h3>
                   </div>
-                  <p style={{ fontSize: '12.5px', color: '#EAEAEA', lineHeight: '1.4', marginBottom: '14px' }}>
+                  <p style={{ fontSize: '12px', color: '#EAEAEA', lineHeight: '1.3', marginBottom: '10px' }}>
                     {validationError}
                   </p>
 
-                  <div style={{ backgroundColor: 'rgba(15, 5, 29, 0.6)', border: '1px solid rgba(255, 107, 107, 0.2)', padding: '10px', borderRadius: '8px', marginBottom: '16px' }}>
-                    <h4 style={{ color: 'var(--accent)', fontSize: '11.5px', fontWeight: 'bold', marginBottom: '4px' }}>
+                  <div style={{ backgroundColor: 'rgba(15, 5, 29, 0.6)', border: '1px solid rgba(255, 107, 107, 0.2)', padding: '8px 10px', borderRadius: '8px', marginBottom: '12px' }}>
+                    <h4 style={{ color: 'var(--accent)', fontSize: '11px', fontWeight: 'bold', marginBottom: '3px' }}>
                       {language === 'hi' ? "स्कैन नियम:" : "Scan rules:"}
                     </h4>
-                    <p style={{ fontSize: '11px', color: 'var(--text-secondary)', margin: '2px 0' }}>{t.aiRule1}</p>
-                    <p style={{ fontSize: '11px', color: 'var(--text-secondary)', margin: '2px 0' }}>{t.aiRule2}</p>
-                    <p style={{ fontSize: '11px', color: 'var(--text-secondary)', margin: '2px 0' }}>{t.aiRule3}</p>
+                    <p style={{ fontSize: '10.5px', color: 'var(--text-secondary)', margin: '1px 0', lineHeight: '1.3' }}>{t.aiRule1}</p>
+                    <p style={{ fontSize: '10.5px', color: 'var(--text-secondary)', margin: '1px 0', lineHeight: '1.3' }}>{t.aiRule2}</p>
+                    <p style={{ fontSize: '10.5px', color: 'var(--text-secondary)', margin: '1px 0', lineHeight: '1.3' }}>{t.aiRule3}</p>
                   </div>
 
-                  <div style={{ display: 'flex', gap: '10px' }}>
+                  <div style={{ display: 'flex', gap: '8px' }}>
                     <button
                       className="btn btn-secondary"
-                      style={{ flex: 1, padding: '10px', fontSize: '13px' }}
+                      style={{ flex: 1, padding: '8px', fontSize: '12.5px' }}
                       onClick={() => setValidationError(null)}
                     >
                       {t.clear}
                     </button>
                     <button
                       className="btn"
-                      style={{ flex: 1, padding: '10px', fontSize: '13px', background: 'var(--danger)', color: 'white', boxShadow: 'none' }}
+                      style={{ flex: 1, padding: '8px', fontSize: '12.5px', background: 'var(--danger)', color: 'white', boxShadow: 'none' }}
                       onClick={() => { setValidationError(null); fileInputRef.current?.click(); }}
                     >
                       {t.tryAgain}

@@ -317,13 +317,32 @@ export default function Home() {
                 style={{ width: '100%', height: 'auto', display: 'block', borderRadius: '4px' }} 
               />
             </div>
-            <button
-              className="btn"
-              onClick={() => setShowSampleModal(false)}
-              style={{ width: '100%', marginTop: '20px', padding: '12px 0', fontSize: '13px' }}
-            >
-              {language === 'hi' ? "बंद करें" : "Close Example"}
-            </button>
+            <div style={{ display: 'flex', gap: '12px', marginTop: '20px' }}>
+              <button
+                className="btn btn-secondary"
+                onClick={() => setShowSampleModal(false)}
+                style={{ flex: 1, padding: '12px 0', fontSize: '13px' }}
+              >
+                {language === 'hi' ? "बंद करें" : "Close"}
+              </button>
+              <button
+                className="btn"
+                onClick={() => {
+                  setShowSampleModal(false);
+                  navigate('/scan', { state: { language, useSample: true } });
+                }}
+                style={{
+                  flex: 1,
+                  padding: '12px 0',
+                  fontSize: '13px',
+                  background: 'linear-gradient(135deg, #FFE3C0 0%, #F5A623 100%)',
+                  color: '#0F051D',
+                  fontWeight: 'bold'
+                }}
+              >
+                {language === 'hi' ? "डेमो स्कैन चलाएं" : "Run Demo Scan"}
+              </button>
+            </div>
           </div>
         </div>
       )}
