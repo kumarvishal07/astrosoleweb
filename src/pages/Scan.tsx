@@ -690,22 +690,7 @@ export default function Scan() {
 
             {/* Left Column: Image Preview Box */}
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-              <div
-                style={{
-                  width: '100%',
-                  maxWidth: '360px',
-                  height: '480px',
-                  backgroundColor: '#1E0B36',
-                  borderRadius: '20px',
-                  overflow: 'hidden',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  border: '2px solid var(--accent)',
-                  position: 'relative',
-                  boxShadow: '0 10px 30px rgba(0, 0, 0, 0.5)'
-                }}
-              >
+              <div className="scanner-preview-box">
                 {isValidating ? (
                   <div
                     style={{

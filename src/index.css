@@ -412,6 +412,28 @@ a {
   animation: scan-vertical 4s infinite linear;
 }
 
+.scanner-preview-box {
+  width: 100%;
+  max-width: 360px;
+  height: 480px;
+  background-color: #1E0B36;
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid var(--accent);
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  transition: height 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .scanner-preview-box {
+    height: 320px;
+  }
+}
+
 /* Modal Styling */
 .modal-overlay {
   position: fixed;

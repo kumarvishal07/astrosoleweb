@@ -10,7 +10,8 @@ import {
   Bell,
   ChevronRight,
   ChevronLeft,
-  Compass
+  Compass,
+  Footprints
 } from 'lucide-react';
 import { generateDetailedReading } from '../data/podomancy';
 import appsoleLogo from '../assets/logo.png';
@@ -528,7 +529,112 @@ export default function Result() {
   useEffect(() => {
     // Generate reading once on mount
     setReading(generateDetailedReading());
+
+    // Dynamically inject Razorpay Checkout script
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.async = true;
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
   }, []);
+
+  const handleRazorpayPayment = async () => {
+    setIsPaying(true);
+    const keyId = import.meta.env.VITE_RAZORPAY_KEY_ID || "";
+
+    if (!keyId) {
+      alert("Razorpay Key ID is missing! Please configure VITE_RAZORPAY_KEY_ID in your .env file to run payments.");
+      setIsPaying(false);
+      return;
+    }
+
+    try {
+      // 1. Try to create Order ID via backend API
+      let orderId = "";
+      try {
+        const response = await fetch('/api/create-order', {
+          method: 'POST',
+        });
+        if (response.ok) {
+          const order = await response.json();
+          orderId = order.id;
+        }
+      } catch (backendError) {
+        console.warn("Backend order creation failed, falling back to client-side checkout:", backendError);
+      }
+
+      const options = {
+        key: keyId,
+        amount: 1100, // ₹11.00 (1100 paise)
+        currency: "INR",
+        name: "AstroSole",
+        description: "Unlock Premium AstroSole Astrological Report",
+        ...(orderId ? { order_id: orderId } : {}), // Bind order_id if backend succeeded
+        handler: async function (paymentResponse: { razorpay_order_id?: string; razorpay_payment_id: string; razorpay_signature?: string }) {
+          setIsPaying(true);
+          
+          // If backend generated the order, verify signature on backend
+          if (orderId && paymentResponse.razorpay_signature) {
+            try {
+              const verifyResponse = await fetch('/api/verify-payment', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  razorpay_order_id: paymentResponse.razorpay_order_id,
+                  razorpay_payment_id: paymentResponse.razorpay_payment_id,
+                  razorpay_signature: paymentResponse.razorpay_signature,
+                }),
+              });
+
+              const verifyResult = await verifyResponse.json();
+              if (verifyResult.success) {
+                setIsUnlocked(true);
+                setShowPaymentModal(false);
+              } else {
+                alert(verifyResult.message || "Payment verification failed.");
+              }
+            } catch (verifyError) {
+              console.error("Verification failed:", verifyError);
+              alert("An error occurred during payment verification.");
+            } finally {
+              setIsPaying(false);
+            }
+          } else {
+            // Client-side checkout fallback (for local test/demo environments)
+            setIsUnlocked(true);
+            setShowPaymentModal(false);
+            setIsPaying(false);
+          }
+        },
+        prefill: {
+          name: name,
+          email: "user@astrosole.in",
+          contact: "9999999999"
+        },
+        theme: {
+          color: "#A855F7",
+        },
+        modal: {
+          ondismiss: function() {
+            setIsPaying(false);
+          }
+        }
+      };
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const rzp = new (window as any).Razorpay(options);
+      rzp.open();
+    } catch (error) {
+      console.error("Payment error:", error);
+      alert("Unable to initiate payment. Please try again.");
+      setIsPaying(false);
+    }
+  };
 
   const toggleLanguage = () => {
     setLanguage(prev => prev === 'en' ? 'hi' : 'en');
@@ -724,18 +830,83 @@ export default function Result() {
         </div>
       </header>
 
+      {/* Dynamic Mirror Symmetry Info Box */}
+      <div style={{ maxWidth: '600px', margin: '0 auto 15px', padding: '0 10px' }}>
+        <div style={{
+          fontSize: '12.5px',
+          color: 'var(--text-secondary)',
+          border: '1px solid rgba(224, 192, 151, 0.25)',
+          background: 'rgba(30, 10, 50, 0.4)',
+          backdropFilter: 'blur(8px)',
+          padding: '16px',
+          borderRadius: '16px',
+          textAlign: 'justify',
+          lineHeight: '1.5'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', color: 'var(--accent)', fontWeight: 'bold', fontFamily: 'Cinzel', fontSize: '13px' }}>
+            <Footprints size={18} />
+            <span>
+              {language === 'hi' ? "दोहरा-पैर विश्लेषण और समरूपता (Dual-Foot Symmetry Mapping)" : "Dual-Foot Symmetry Mapping"}
+            </span>
+          </div>
+          {language === 'hi'
+            ? "यद्यपि आपने केवल एक पैर की छवि अपलोड की है, हमारे एआई इंजन ने दोनों पैरों का पूर्ण विश्लेषण करने के लिए द्विपक्षीय शारीरिक समरूपता (Bilateral Structural Symmetry) का उपयोग किया है। मानव शरीर में दोनों पैरों की चौड़ाई, मेहराब और उंगलियों के अनुपात में 98% तक प्राकृतिक दर्पण-समरूपता होती है। आपका सक्रिय पैर (दायां) आपके बाहरी भविष्य और करियर को दर्शाता है, जबकि निष्क्रिय पैर (बायां) आपके जन्मजात स्वभाव को दर्शाता है। इस प्रकार, एक पैर के सटीक स्कैन से दोनों पैरों की ग्रहीय रेखाओं का आकलन किया जाता है।"
+            : "Even though you uploaded a single foot picture, our AI engine reconstructs the bilateral structural symmetries to map both feet. In Podomancy, the human body exhibits mirrored skeletal dimensions (width, arch, and toe length ratios), which are 98% symmetrical. The active foot (usually right) represents your outer path and career, while the passive foot (left) maps your innate character and past karmas. By analyzing the contours of your uploaded sole, AstroSole accurately mirrors the structural baseline and extrapolates the corresponding energy nodes."
+          }
+        </div>
+      </div>
+
       {!isUnlocked ? (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', maxWidth: '600px', margin: '0 auto', padding: '10px' }}>
           {/* Overall Details Paragraph */}
-          <div className="glass-card" style={{ padding: '24px', textAlign: 'center', margin: 0 }}>
-            <Sparkles color="var(--accent)" size={32} style={{ margin: '0 auto 12px' }} className="animate-pulse" />
-            <h2 style={{ fontFamily: 'Cinzel', fontSize: '20px', color: 'var(--accent)', marginBottom: '16px' }}>
-              {language === 'hi' ? "पैर का विश्लेषण (Foot Analysis Summary)" : "Foot Analysis Summary"}
-            </h2>
-            <p style={{ fontSize: '14.5px', color: 'var(--text-primary)', lineHeight: '1.6', margin: 0, textAlign: 'justify' }}>
+          <div className="glass-card" style={{ padding: '24px', textAlign: 'left', margin: 0 }}>
+            <div style={{ textAlign: 'center', marginBottom: '16px' }}>
+              <Sparkles color="var(--accent)" size={32} style={{ margin: '0 auto 12px' }} className="animate-pulse" />
+              <h2 style={{ fontFamily: 'Cinzel', fontSize: '20px', color: 'var(--accent)', marginBottom: '8px' }}>
+                {language === 'hi' ? "पैर का विश्लेषण (Foot Analysis Summary)" : "Foot Analysis Summary"}
+              </h2>
+            </div>
+
+            {/* Paragraph 1 */}
+            <p style={{ fontSize: '14.5px', color: 'var(--text-primary)', lineHeight: '1.6', marginBottom: '16px', textAlign: 'justify' }}>
               {language === 'hi'
                 ? `प्रिय ${name === 'User' ? 'उपयोगकर्ता' : name}, एस्ट्रोसोल एआई टेलीमेट्री ने आपके पैर के तलवे की रूपरेखा का सफलतापूर्वक मानचित्रण कर लिया है। आपके पैर का ढांचा ${reading?.detected?.shape?.hi || 'पृथ्वी तत्व'} के संरेखण में है, जो व्यावहारिक स्वभाव, महान सहनशीलता और भावनात्मक स्थिरता को दर्शाता है। आपके तलवे की रेखाओं के सूक्ष्म विश्लेषण से पता चलता है कि आपके जीवन पथ की दिशा मजबूत आध्यात्मिक विकास, छिपे हुए रहस्यों के प्रति रुचि और उत्कृष्ट बौद्धिक क्षमता की ओर संकेत करती है।`
                 : `Dear ${name === 'User' ? 'User' : name}, the AstroSole AI telemetry has successfully mapped your sole contour coordinates. Your foot shape aligns with the ${reading?.detected?.shape?.en || 'Earth Foot'} structure, reflecting a highly grounded nature, remarkable resilience, and emotional stability. The coordinate readings show strong cosmic alignment with Destiny Node 7, pointing toward unique spiritual growth, natural intuitive insights, and an analytical future path.`
+              }
+            </p>
+
+            {/* Structural Breakdown (Checklist) */}
+            <div style={{
+              background: 'rgba(255, 255, 255, 0.02)',
+              border: '1px solid var(--border-color)',
+              borderRadius: '8px',
+              padding: '16px',
+              marginBottom: '16px'
+            }}>
+              <h4 style={{ fontFamily: 'Cinzel', fontSize: '14px', color: 'var(--accent)', marginTop: 0, marginBottom: '10px' }}>
+                {language === 'hi' ? "खोजे गए ग्रहीय प्रभाव (Detected Planetary Influences)" : "Detected Planetary Influences"}
+              </h4>
+              <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
+                <li style={{ marginBottom: '8px' }}>
+                  <strong>{language === 'hi' ? "बायां पैर (चंद्र संरेखण - जन्मजात प्रतिभा): " : "Left Foot (Moon Alignment - Innate Talents): "}</strong>
+                  {language === 'hi' ? "उच्च अंतर्ज्ञान, मजबूत जड़ें और मजबूत भावनात्मक गहराई।" : "High intuition, robust grounding, and emotional depth."}
+                </li>
+                <li style={{ marginBottom: '8px' }}>
+                  <strong>{language === 'hi' ? "दायां पैर (सूर्य संरेखण - भविष्य का मार्ग): " : "Right Foot (Sun Alignment - Future Path): "}</strong>
+                  {language === 'hi' ? "आगामी करियर विकास, जीवन पथ 4 के साथ तालमेल और नेतृत्व की क्षमता।" : "Upcoming career acceleration, alignment with Life Path 4, and hidden leadership capacity."}
+                </li>
+                <li>
+                  <strong>{language === 'hi' ? "मुख्य मेहराब और रेखाएं: " : "Arch Profile & Line Mapping: "}</strong>
+                  {language === 'hi' ? "सफलता और लचीलेपन का संकेत देने वाला संतुलित संरेखण।" : "Balanced configuration indicating upcoming transformation and high adaptability."}
+                </li>
+              </ul>
+            </div>
+
+            {/* Paragraph 2 */}
+            <p style={{ fontSize: '14.5px', color: 'var(--text-primary)', lineHeight: '1.6', margin: 0, textAlign: 'justify' }}>
+              {language === 'hi'
+                ? "आपके पैर की रेखाएं एक महत्वपूर्ण आध्यात्मिक चौराहे की ओर इशारा करती हैं। आपके बृहस्पति पर्वत पर मजबूत ग्रहीय प्रभाव है, जो आपके रिश्तों और करियर में नेतृत्व की एक बड़ी छिपी हुई क्षमता को दर्शाता है। इसके अलावा, आपकी उंगलियों की लंबाई और आकार आपके गहरे भावनात्मक संवाद के बारे में अद्वितीय रहस्यों को प्रकट करते हैं, जिन्हें आपके लव इंडेक्स में विस्तृत किया गया है।"
+                : "Your foot lines indicate a significant cosmic crossroads approaching. The Mount of Jupiter shows a strong active presence, hinting at a hidden leadership potential that is yet to manifest in your relationships and career. In addition, the length and shape of your toes reveal unique traits about how you communicate your deepest feelings, which we have detailed in your personal Love Index."
               }
             </p>
           </div>
@@ -758,14 +929,14 @@ export default function Result() {
             </p>
 
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'baseline', gap: '6px', marginBottom: '24px' }}>
-              <span style={{ fontSize: '32px', fontWeight: 'bold', color: 'var(--accent)' }}>₹0</span>
-              <span style={{ fontSize: '14px', color: 'var(--text-secondary)', textDecoration: 'line-through' }}>₹499</span>
-              <span style={{ fontSize: '12px', color: 'yellowgreen', fontWeight: 'bold' }}>(100% OFF)</span>
+              <span style={{ fontSize: '32px', fontWeight: 'bold', color: 'var(--accent)' }}>₹11</span>
+              <span style={{ fontSize: '14px', color: 'var(--text-secondary)', textDecoration: 'line-through' }}>₹99</span>
+              <span style={{ fontSize: '12px', color: 'yellowgreen', fontWeight: 'bold' }}>(88% OFF)</span>
             </div>
 
             <button 
               className="btn" 
-              onClick={() => setIsUnlocked(true)}
+              onClick={() => setShowPaymentModal(true)}
               style={{ 
                 width: '100%', 
                 maxWidth: '300px', 
@@ -1522,7 +1693,7 @@ export default function Result() {
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
                 <span style={{ color: 'var(--text-secondary)' }}>{language === 'hi' ? "राशि:" : "Amount:"}</span>
-                <span style={{ color: 'var(--accent)', fontWeight: 'bold' }}>₹0.00</span>
+                <span style={{ color: 'var(--accent)', fontWeight: 'bold' }}>₹11.00</span>
               </div>
             </div>
 
@@ -1537,14 +1708,7 @@ export default function Result() {
               <button 
                 className="btn" 
                 disabled={isPaying}
-                onClick={() => {
-                  setIsPaying(true);
-                  setTimeout(() => {
-                    setIsPaying(false);
-                    setIsUnlocked(true);
-                    setShowPaymentModal(false);
-                  }, 1200);
-                }}
+                onClick={handleRazorpayPayment}
                 style={{ 
                   flex: 1, 
                   padding: '12px 0', 
