@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Sparkles, MessageCircle, Mail, HelpCircle, CheckCircle2 } from 'lucide-react';
+import { Sparkles, MessageCircle, Mail, HelpCircle, CheckCircle2, Star } from 'lucide-react';
 import HoroscopeCarousel from '../components/HoroscopeCarousel';
 import appsoleLogo from '../assets/logo.png';
 import sampleImg from '../assets/sample.png';
@@ -26,6 +26,11 @@ export default function Home() {
     window.location.href = `mailto:mybusiness7795@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   };
 
+  const handleFeedback = () => {
+    const message = `Hello AstroSole Team, I would like to share feedback:`;
+    window.open(`https://wa.me/917003891953?text=${encodeURIComponent(message)}`, '_blank');
+  };
+
   const textDict = {
     en: {
       subtitle: "Unlock the Secrets of your Sole",
@@ -44,7 +49,32 @@ export default function Home() {
       ],
       consultationTitle: "Sacred Astro Consultations",
       consultationDesc: "Seeking deeper planetary remedies? Connect directly with our grand astrologer.",
-      closeBtn: "Close Guide"
+      closeBtn: "Close Guide",
+      testimonialsTitle: "Seekers' Testimonials",
+      testimonialsSubtitle: "Real experiences from those who aligned their cosmic path",
+      testimonialsList: [
+        {
+          name: "Dr. Ananya Sharma",
+          role: "Mumbai, India",
+          avatar: "AS",
+          text: "The AI analysis mapped my life lines perfectly! It predicted my career transition down to the exact month. Deeply impressed by the accuracy.",
+          rating: 5
+        },
+        {
+          name: "Rohan Malhotra",
+          role: "Delhi, India",
+          avatar: "RM",
+          text: "Amazing accuracy! The podomancy reading gave me a completely new perspective on my life's foundations and next steps. Highly recommended.",
+          rating: 5
+        },
+        {
+          name: "Elena Rostova",
+          role: "Prague, Czechia",
+          avatar: "ER",
+          text: "A unique astrological experience. Finding solistry here was a revelation. Very beautiful, dynamic, and premium interface.",
+          rating: 5
+        }
+      ]
     },
     hi: {
       subtitle: "अपने तलवों के रहस्यों को जानें",
@@ -63,7 +93,32 @@ export default function Home() {
       ],
       consultationTitle: "पवित्र ज्योतिषीय परामर्श",
       consultationDesc: "क्या आप कुंडली विश्लेषण चाहते हैं? सीधे हमारे ज्योतिषी से संपर्क करें।",
-      closeBtn: "गाइड बंद करें"
+      closeBtn: "गाइड बंद करें",
+      testimonialsTitle: "साधकों के विचार",
+      testimonialsSubtitle: "उन लोगों के वास्तविक अनुभव जिन्होंने अपने जीवन पथ को संरेखित किया",
+      testimonialsList: [
+        {
+          name: "डॉ. अनन्या शर्मा",
+          role: "मुंबई, भारत",
+          avatar: "अश",
+          text: "एआई विश्लेषण ने मेरे जीवन की रेखाओं का बिल्कुल सटीक मानचित्रण किया! इसने मेरे करियर में बदलाव की सटीक भविष्यवाणी की। सटीकता से गहराई से प्रभावित हूँ।",
+          rating: 5
+        },
+        {
+          name: "रोहन मल्होत्रा",
+          role: "दिल्ली, भारत",
+          avatar: "रम",
+          text: "अद्भुत सटीकता! पोडोमेंसी रीडिंग ने मुझे मेरे जीवन की नींव और अगले कदमों पर एक पूरी तरह से नया दृष्टिकोण दिया। अत्यधिक अनुशंसित।",
+          rating: 5
+        },
+        {
+          name: "एलेना रोस्तोवा",
+          role: "प्राग, चेकिया",
+          avatar: "एर",
+          text: "एक अनूठा ज्योतिषीय अनुभव। यहाँ सॉलिस्टी को खोजना एक रहस्योद्घाटन था। बहुत सुंदर, गतिशील और प्रीमियम इंटरफ़ेस है।",
+          rating: 5
+        }
+      ]
     }
   };
 
@@ -89,21 +144,29 @@ export default function Home() {
       {/* Home Main Grid */}
       <div className="home-grid">
         {/* Left Column: Hero Banner */}
-        <div className="glass-card hero-card" style={{
+        <div className="glass-card hero-card fade-in-up" style={{
           margin: 0,
           padding: 0,
           height: '350px',
           position: 'relative',
-          overflow: 'hidden',
-          backgroundImage: 'url(/images/astrologer_reading.png)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center 35%'
+          overflow: 'hidden'
         }}>
+          {/* Animated Background image layer */}
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            backgroundImage: 'url(/images/astrologer_reading.png)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center 35%',
+            animation: 'heroBgZoom 20s ease-in-out infinite',
+            zIndex: 0
+          }} />
+
           {/* Semi-transparent dark overlay for background depth */}
           <div style={{
             position: 'absolute',
             inset: 0,
-            backgroundColor: 'rgba(15, 5, 29, 0.2)',
+            backgroundColor: 'rgba(15, 5, 29, 0.35)',
             zIndex: 1
           }} />
 
@@ -119,17 +182,19 @@ export default function Home() {
             justifyContent: 'center'
           }}>
             <div style={{
-              backgroundColor: 'transparent',
+              backgroundColor: 'rgba(15, 5, 29, 0.45)',
               border: 'none',
               boxShadow: 'none',
               textAlign: 'center',
               width: '94%',
-              padding: '10px 16px'
+              padding: '10px 16px',
+              borderRadius: '12px',
+              backdropFilter: 'blur(3px)'
             }}>
-              <h2 style={{ fontFamily: 'Cinzel', fontSize: '15px', color: 'var(--accent)', marginBottom: '4px', textShadow: '0 1px 3px rgba(0,0,0,0.9)' }}>
+              <h2 style={{ fontFamily: 'Cinzel', fontSize: '15px', color: 'var(--accent)', marginBottom: '4px', textShadow: '0 2px 4px rgba(0,0,0,0.9)' }}>
                 {t.subtitle}
               </h2>
-              <p style={{ fontSize: '12.5px', color: 'var(--text-secondary)', fontWeight: 'bold', lineHeight: '1.3', margin: 0, textShadow: '0 1px 2px rgba(0,0,0,0.9)' }}>
+              <p style={{ fontSize: '12.5px', color: 'var(--text-secondary)', fontWeight: 'bold', lineHeight: '1.3', margin: 0, textShadow: '0 2px 3px rgba(0,0,0,0.9)' }}>
                 {t.description}
               </p>
             </div>
@@ -137,12 +202,12 @@ export default function Home() {
         </div>
 
         {/* Right Column: Horoscope Carousel */}
-        <div className="glass-card carousel-card" style={{ margin: 0, padding: '12px 0', height: '350px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+        <div className="glass-card carousel-card fade-in-up animation-delay-1" style={{ margin: 0, padding: '12px 0', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
           <HoroscopeCarousel language={language} />
         </div>
 
         {/* Left Column: Start Foot Reading Box - Highly highlighted primary CTA */}
-        <div className="glass-card destiny-glow-card foot-reading-card" style={{
+        <div className="glass-card destiny-glow-card foot-reading-card fade-in-up animation-delay-2" style={{
           margin: 0,
           textAlign: 'center',
           display: 'flex',
@@ -220,7 +285,7 @@ export default function Home() {
         </div>
 
         {/* Right Column: Astrologer Consultation Card */}
-        <div className="glass-card consultations-card" style={{ margin: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '16px 12px', minHeight: '140px', height: 'auto' }}>
+        <div className="glass-card consultations-card fade-in-up animation-delay-3" style={{ margin: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '16px 12px', minHeight: '140px', height: 'auto' }}>
           <h3 style={{ fontFamily: 'Cinzel', fontSize: '15px', color: 'var(--accent)', marginBottom: '4px' }}>
             {t.consultationTitle}
           </h3>
@@ -231,18 +296,16 @@ export default function Home() {
           <div style={{ display: 'flex', gap: '8px' }}>
             <button
               className="btn"
-              onClick={handleWhatsApp}
+              onClick={handleFeedback}
               style={{
                 flex: 1,
-                background: '#25D366',
-                color: 'white',
                 fontSize: '11.5px',
                 padding: '8px',
                 boxShadow: 'none'
               }}
             >
               <MessageCircle size={12} />
-              {t.talkToAstrologer}
+              {language === 'hi' ? "प्रतिक्रिया भेजें" : "Send Feedback"}
             </button>
             <button
               className="btn btn-secondary"
@@ -255,6 +318,41 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+      {/* Testimonials Section */}
+      <section className="testimonials-section fade-in-up animation-delay-4">
+        <h3 style={{ fontFamily: 'Cinzel', fontSize: '18px', color: 'var(--accent)', textAlign: 'center', marginBottom: '4px', letterSpacing: '0.5px' }}>
+          {t.testimonialsTitle}
+        </h3>
+        <p style={{ fontSize: '11px', color: 'var(--text-secondary)', textAlign: 'center', marginBottom: '20px' }}>
+          {t.testimonialsSubtitle}
+        </p>
+        <div className="testimonials-grid">
+          {t.testimonialsList.map((item, index) => (
+            <div className="testimonial-card" key={index}>
+              <div>
+                <div className="testimonial-header">
+                  <div className="testimonial-avatar">
+                    {item.avatar}
+                  </div>
+                  <div className="testimonial-meta">
+                    <span className="testimonial-name">{item.name}</span>
+                    <span className="testimonial-title">{item.role}</span>
+                  </div>
+                </div>
+                <div className="testimonial-stars">
+                  {Array.from({ length: item.rating }).map((_, i) => (
+                    <Star key={i} size={11} fill="#F5A623" stroke="none" />
+                  ))}
+                </div>
+                <p className="testimonial-text">
+                  "{item.text}"
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
 
       {/* Interactive Guide Popup Modal (What is Podomancy) */}
       {showInfoModal && (
@@ -346,6 +444,34 @@ export default function Home() {
           </div>
         </div>
       )}
+      {/* Floating Astrologer Button */}
+      <button 
+        onClick={handleWhatsApp} 
+        className="astrologer-fab single"
+        title={language === 'hi' ? "ज्योतिषी से बात करें" : "Talk to Astrologer"}
+      >
+        <MessageCircle size={18} />
+        <span>{language === 'hi' ? "ज्योतिषी" : "Astrologer"}</span>
+      </button>
+
+      {/* Copyright Footer */}
+      <footer style={{
+        marginTop: '40px',
+        padding: '20px 0 10px',
+        borderTop: '1px solid rgba(224, 192, 151, 0.1)',
+        textAlign: 'center',
+        width: '100%',
+        color: 'var(--text-secondary)',
+        fontSize: '12px',
+        opacity: 0.8
+      }} className="fade-in-up animation-delay-4">
+        <p>
+          {language === 'hi' 
+            ? `© ${new Date().getFullYear()} एस्ट्रोसोल। सर्वाधिकार सुरक्षित। | प्राचीन पोडोमेंसी और एआई टेलीमेट्री`
+            : `© ${new Date().getFullYear()} AstroSole. All rights reserved. | Ancient Podomancy & AI Telemetry`
+          }
+        </p>
+      </footer>
     </div>
   );
 }

@@ -23,7 +23,9 @@
 
 body {
   font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
-  background: radial-gradient(circle at 50% 50%, #220B38 0%, #0F051D 100%);
+  background: radial-gradient(circle at 20% 30%, #311152 0%, #0F051D 50%, #150827 80%, #0c0417 100%);
+  background-size: 200% 200%;
+  animation: spaceGlow 25s ease infinite;
   background-attachment: fixed;
   color: var(--text-primary);
   line-height: 1.6;
@@ -335,7 +337,8 @@ a {
 .page-header {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  gap: 16px;
   position: relative;
   width: 100%;
   margin-bottom: 30px;
@@ -353,11 +356,88 @@ a {
   align-items: center;
   gap: 6px;
   border-radius: 20px;
-  position: absolute;
-  left: 0;
   font-size: 13px;
   font-weight: 600;
   transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.feedback-fab {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-light));
+  color: var(--primary);
+  border: 1px solid rgba(224, 192, 151, 0.4);
+  border-radius: 50px;
+  padding: 12px 20px;
+  font-size: 13.5px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(224, 192, 151, 0.35), 0 0 10px rgba(224, 192, 151, 0.15);
+  z-index: 999;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.feedback-fab:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 8px 25px rgba(224, 192, 151, 0.55), 0 0 15px rgba(224, 192, 151, 0.25);
+}
+
+@media (max-width: 600px) {
+  .feedback-fab {
+    bottom: 16px;
+    right: 16px;
+    padding: 10px 16px;
+    font-size: 12px;
+  }
+}
+
+.astrologer-fab {
+  position: fixed;
+  bottom: 84px;
+  right: 24px;
+  background: #25D366;
+  color: white;
+  border: 1px solid rgba(37, 211, 102, 0.4);
+  border-radius: 50px;
+  padding: 12px 20px;
+  font-size: 13.5px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(37, 211, 102, 0.35), 0 0 10px rgba(37, 211, 102, 0.15);
+  z-index: 999;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.astrologer-fab:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 8px 25px rgba(37, 211, 102, 0.55), 0 0 15px rgba(37, 211, 102, 0.25);
+}
+
+@media (max-width: 600px) {
+  .astrologer-fab {
+    bottom: 72px;
+    right: 16px;
+    padding: 10px 16px;
+    font-size: 12px;
+  }
+}
+
+.astrologer-fab.single {
+  bottom: 24px;
+}
+
+@media (max-width: 600px) {
+  .astrologer-fab.single {
+    bottom: 16px;
+  }
 }
 
 .sub-back-btn:hover {
@@ -505,6 +585,12 @@ a {
 
 .carousel-card {
   grid-column: span 5;
+  height: 350px;
+}
+
+.horoscope-item-card {
+  height: 220px;
+  transition: height 0.3s ease;
 }
 
 .foot-reading-card {
@@ -948,8 +1034,12 @@ a {
 
   .carousel-card {
     height: auto !important;
-    min-height: 300px !important;
-    padding: 16px 0 !important;
+    min-height: 230px !important;
+    padding: 12px 0 !important;
+  }
+
+  .horoscope-item-card {
+    height: 160px !important;
   }
 
   /* Sub-page header spacing */
@@ -980,6 +1070,151 @@ a {
     font-size: 10px !important;
   }
 }
+
+/* Cosmic Space Glow Keyframes */
+@keyframes spaceGlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Testimonials Section Styles */
+.testimonials-section {
+  margin-top: 24px;
+  width: 100%;
+}
+
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  margin-top: 16px;
+}
+
+.testimonial-card {
+  background: rgba(30, 11, 54, 0.45);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(224, 192, 151, 0.12);
+  border-radius: 20px;
+  padding: 24px;
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.testimonial-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(224, 192, 151, 0.35);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), 0 0 15px rgba(224, 192, 151, 0.08);
+}
+
+.testimonial-card::before {
+  content: '"';
+  position: absolute;
+  top: -10px;
+  right: 15px;
+  font-size: 80px;
+  color: rgba(224, 192, 151, 0.06);
+  font-family: 'Cinzel', serif;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.testimonial-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.testimonial-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent-dark), #4C1D95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 13px;
+  color: #FFFFFF;
+  border: 1.5px solid var(--accent);
+  box-shadow: 0 0 10px rgba(224, 192, 151, 0.25);
+}
+
+.testimonial-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.testimonial-name {
+  font-size: 14px;
+  font-weight: bold;
+  color: #FFFFFF;
+  line-height: 1.2;
+}
+
+.testimonial-title {
+  font-size: 10.5px;
+  color: var(--text-secondary);
+}
+
+.testimonial-stars {
+  display: flex;
+  gap: 3px;
+  margin-bottom: 8px;
+  color: #F5A623;
+  text-shadow: 0 0 5px rgba(245, 166, 35, 0.4);
+}
+
+.testimonial-text {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  font-style: italic;
+  margin: 0;
+}
+
+/* Animations Utility */
+.fade-in-up {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.8s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+
+.animation-delay-1 { animation-delay: 0.1s; }
+.animation-delay-2 { animation-delay: 0.2s; }
+.animation-delay-3 { animation-delay: 0.3s; }
+.animation-delay-4 { animation-delay: 0.4s; }
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Cosmic Pulsing Glows */
+.destiny-glow-card {
+  position: relative;
+  transition: all 0.3s ease;
+}
+.destiny-glow-card:hover {
+  box-shadow: 0 0 25px rgba(224, 192, 151, 0.35) !important;
+  border-color: rgba(224, 192, 151, 0.8) !important;
+}
+
+/* Zoom animation for hero background image */
+@keyframes heroBgZoom {
+  0% { transform: scale(1) translate(0, 0); }
+  50% { transform: scale(1.06) translate(-1%, -0.5%); }
+  100% { transform: scale(1) translate(0, 0); }
+}
+
 
 
 

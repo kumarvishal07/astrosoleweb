@@ -433,7 +433,7 @@ export default function Scan() {
   const t = textDict[language];
 
   return (
-    <div className="container">
+    <div className="container fade-in-up">
       {/* Top Navbar Header */}
       <header className="app-header">
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>

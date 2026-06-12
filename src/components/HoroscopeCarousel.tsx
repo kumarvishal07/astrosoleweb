@@ -72,7 +72,7 @@ export default function HoroscopeCarousel({ language = 'en' }: HoroscopeCarousel
         {dailyHoroscope.map((item) => (
           <div 
             key={item.symbol}
-            className="glass-card"
+            className="glass-card horoscope-item-card"
             style={{
               minWidth: '240px',
               maxWidth: '280px',
@@ -80,7 +80,6 @@ export default function HoroscopeCarousel({ language = 'en' }: HoroscopeCarousel
               flexShrink: 0,
               padding: '12px',
               margin: '0',
-              height: '220px',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-between',

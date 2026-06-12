@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, Navigate } from 'react-router-dom';
 import { 
   Sparkles, 
   MessageCircle, 
@@ -496,6 +496,11 @@ const getPrintReportDetails = (isEarth: boolean, isWater: boolean, isFire: boole
 export default function Result() {
   const navigate = useNavigate();
   const location = useLocation();
+
+  if (!location.state) {
+    return <Navigate to="/" replace />;
+  }
+
   const { name = 'User', language: stateLanguage = 'en' } = location.state || {};
   
   const [reading, setReading] = useState<ReturnType<typeof generateDetailedReading> | null>(null);
@@ -650,6 +655,12 @@ export default function Result() {
     const body = `Hi AstroSole Team,\n\nI just completed my foot sole scan and would love to get a comprehensive consultation regarding my astrological path.\n\nBest,\n${name}`;
     window.location.href = `mailto:mybusiness7795@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   };
+
+  const handleFeedback = () => {
+    const message = `Hello AstroSole Team, I would like to share feedback:`;
+    window.open(`https://wa.me/917003891953?text=${encodeURIComponent(message)}`, '_blank');
+  };
+
 
   const [copied, setCopied] = useState(false);
 
@@ -812,7 +823,7 @@ export default function Result() {
   const t = textDict[language];
 
   return (
-    <div className="container" style={{ paddingBottom: '32px' }}>
+    <div className="container fade-in-up" style={{ paddingBottom: '32px' }}>
       
       {/* Top Navbar Header */}
       <header className="app-header" style={{ marginBottom: '18px' }}>
@@ -929,14 +940,14 @@ export default function Result() {
             </p>
 
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'baseline', gap: '6px', marginBottom: '24px' }}>
-              <span style={{ fontSize: '32px', fontWeight: 'bold', color: 'var(--accent)' }}>₹11</span>
-              <span style={{ fontSize: '14px', color: 'var(--text-secondary)', textDecoration: 'line-through' }}>₹99</span>
-              <span style={{ fontSize: '12px', color: 'yellowgreen', fontWeight: 'bold' }}>(88% OFF)</span>
+              <span style={{ fontSize: '32px', fontWeight: 'bold', color: 'var(--accent)' }}>₹0</span>
+              <span style={{ fontSize: '14px', color: 'var(--text-secondary)', textDecoration: 'line-through' }}>₹499</span>
+              <span style={{ fontSize: '12px', color: 'yellowgreen', fontWeight: 'bold' }}>(100% OFF)</span>
             </div>
 
             <button 
               className="btn" 
-              onClick={() => setShowPaymentModal(true)}
+              onClick={() => setIsUnlocked(true)}
               style={{ 
                 width: '100%', 
                 maxWidth: '300px', 
@@ -1728,6 +1739,26 @@ export default function Result() {
           </div>
         </div>
       )}
+
+      {/* Floating Astrologer Button */}
+      <button 
+        onClick={handleWhatsApp} 
+        className="astrologer-fab"
+        title={language === 'hi' ? "ज्योतिषी से बात करें" : "Talk to Astrologer"}
+      >
+        <MessageCircle size={18} />
+        <span>{language === 'hi' ? "ज्योतिषी" : "Astrologer"}</span>
+      </button>
+
+      {/* Floating Feedback Button */}
+      <button 
+        onClick={handleFeedback} 
+        className="feedback-fab"
+        title={language === 'hi' ? "प्रतिक्रिया भेजें" : "Send Feedback"}
+      >
+        <MessageCircle size={18} />
+        <span>{language === 'hi' ? "प्रतिक्रिया" : "Feedback"}</span>
+      </button>
 
     </div>
   );
