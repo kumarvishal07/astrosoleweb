@@ -152,14 +152,15 @@ export default function Home() {
           overflow: 'hidden'
         }}>
           {/* Animated Background image layer */}
-          <div style={{
+          <div className="hero-bg-layer" style={{
             position: 'absolute',
             inset: 0,
             backgroundImage: 'url(/images/astrologer_reading.png)',
             backgroundSize: 'cover',
             backgroundPosition: 'center 35%',
             animation: 'heroBgZoom 20s ease-in-out infinite',
-            zIndex: 0
+            zIndex: 0,
+            transition: 'transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1)'
           }} />
 
           {/* Semi-transparent dark overlay for background depth */}
@@ -181,15 +182,16 @@ export default function Home() {
             display: 'flex',
             justifyContent: 'center'
           }}>
-            <div style={{
-              backgroundColor: 'rgba(15, 5, 29, 0.45)',
-              border: 'none',
-              boxShadow: 'none',
+            <div className="hero-text-card" style={{
+              backgroundColor: 'rgba(15, 5, 29, 0.2)',
+              border: '1px solid rgba(224, 192, 151, 0.3)',
+              boxShadow: '0 4px 30px rgba(0, 0, 0, 0.2)',
               textAlign: 'center',
               width: '94%',
               padding: '10px 16px',
               borderRadius: '12px',
-              backdropFilter: 'blur(3px)'
+              transition: 'all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1)'
+              /*backdropFilter: 'blur(1px)'*/
             }}>
               <h2 style={{ fontFamily: 'Cinzel', fontSize: '15px', color: 'var(--accent)', marginBottom: '4px', textShadow: '0 2px 4px rgba(0,0,0,0.9)' }}>
                 {t.subtitle}
@@ -395,12 +397,12 @@ export default function Home() {
               <h3 style={{ fontFamily: 'Cinzel', fontSize: '18px', color: 'var(--accent)', margin: 0 }}>
                 {language === 'hi' ? "उदाहरण ज्योतिषीय रिपोर्ट" : "Example Astrological Report"}
               </h3>
-              <button 
+              <button
                 onClick={() => setShowSampleModal(false)}
-                style={{ 
-                  background: 'none', 
-                  border: 'none', 
-                  color: 'var(--text-secondary)', 
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: 'var(--text-secondary)',
                   cursor: 'pointer',
                   fontSize: '18px'
                 }}
@@ -409,10 +411,10 @@ export default function Home() {
               </button>
             </div>
             <div style={{ maxHeight: '70vh', overflowY: 'auto', borderRadius: '8px' }}>
-              <img 
-                src={sampleImg} 
-                alt="Example Astrological Report" 
-                style={{ width: '100%', height: 'auto', display: 'block', borderRadius: '4px' }} 
+              <img
+                src={sampleImg}
+                alt="Example Astrological Report"
+                style={{ width: '100%', height: 'auto', display: 'block', borderRadius: '4px' }}
               />
             </div>
             <div style={{ display: 'flex', gap: '12px', marginTop: '20px' }}>
@@ -445,8 +447,8 @@ export default function Home() {
         </div>
       )}
       {/* Floating Astrologer Button */}
-      <button 
-        onClick={handleWhatsApp} 
+      <button
+        onClick={handleWhatsApp}
         className="astrologer-fab single"
         title={language === 'hi' ? "ज्योतिषी से बात करें" : "Talk to Astrologer"}
       >
@@ -466,7 +468,7 @@ export default function Home() {
         opacity: 0.8
       }} className="fade-in-up animation-delay-4">
         <p>
-          {language === 'hi' 
+          {language === 'hi'
             ? `© ${new Date().getFullYear()} एस्ट्रोसोल। सर्वाधिकार सुरक्षित। | प्राचीन पोडोमेंसी और एआई टेलीमेट्री`
             : `© ${new Date().getFullYear()} AstroSole. All rights reserved. | Ancient Podomancy & AI Telemetry`
           }
