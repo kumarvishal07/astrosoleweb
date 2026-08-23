@@ -1215,6 +1215,63 @@ a {
   100% { transform: scale(1) translate(0, 0); }
 }
 
+/* Dynamic Interactive Styling for Hero Image Box */
+.hero-card {
+  cursor: pointer;
+  transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.hero-card:hover {
+  border-color: rgba(224, 192, 151, 0.45) !important;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 25px rgba(224, 192, 151, 0.15) !important;
+}
+
+/* Hover Zoom & Pan */
+.hero-card:hover .hero-bg-layer {
+  transform: scale(1.15) translate(-0.5%, -0.5%);
+  animation-play-state: paused; /* Pause gentle movement so hover feels responsive */
+}
+
+/* Float & Glow effect for text overlay card */
+.hero-card:hover .hero-text-card {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4), 0 0 15px rgba(224, 192, 151, 0.2);
+  border-color: rgba(224, 192, 151, 0.6) !important;
+  background-color: rgba(15, 5, 29, 0.35) !important; /* Slightly darker to pop on zoom */
+}
+
+/* Mystical Sweep Shine Effect */
+.hero-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(255, 255, 255, 0.12) 35%,
+    rgba(224, 192, 151, 0.25) 50%,
+    rgba(255, 255, 255, 0.12) 65%,
+    transparent 100%
+  );
+  transform: skewX(-25deg);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.hero-card:hover::after {
+  animation: shineSweep 1.6s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+}
+
+@keyframes shineSweep {
+  0% { left: -150%; }
+  50% { left: 150%; }
+  100% { left: 150%; }
+}
+
+
 
 
 
