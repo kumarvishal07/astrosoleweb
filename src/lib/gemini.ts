@@ -145,7 +145,7 @@ export const verifyIsFootImage = async (imageFile: File): Promise<boolean> => {
   // Compress and convert File to base64
   const { base64Data, mimeType } = await compressImage(imageFile, 800, 0.7);
 
-  const prompt = "Analyze this image. You must determine if it contains a human foot or human foot sole (this can be a real photo, a drawing, or a stylized illustration of a human foot/sole). Respond with 'yes' if there is a human foot, foot sole, or foot silhouette/illustration present. Respond with 'no' if there is no human foot or foot sole present at all (for example, if the image shows only a logo, a laptop, a face, a hand, animal, abstract chart/map, or other objects without a foot). Reply with exactly 'yes' or 'no' in lowercase, and nothing else.";
+  const prompt = "Analyze this image. You must determine if it contains a bare human foot, foot sole, or foot silhouette/illustration, and absolutely NOT a human hand. Respond with 'yes' if there is a bare human foot or foot sole/silhouette present. Respond with 'no' if there is no foot/sole present, OR if the image contains a human hand, palm, fingers of a hand, wrist, or glove. Under no circumstances should a hand, palm, or fingers of a hand be identified as a foot; if any part of a human hand or palm is present, you must respond with 'no'. Reply with exactly 'yes' or 'no' in lowercase, and nothing else.";
 
   const modelsToTry = [
     "gemini-2.5-flash-lite",
