@@ -1,0 +1,149 @@
+# Product Requirement Document (PRD) & Business Architecture: AstroSole
+
+**Tagline:** *Astrology of Your Sole*  
+**Author:** CTO & Senior Product Manager  
+**Version:** 1.0.0 (Enterprise Full-Stack Architecture)  
+**Status:** Active Production Blueprint  
+
+---
+
+## 1. Executive Summary & Product Vision
+
+### 1.1 Product Vision
+**AstroSole** is an AI-powered Podomancy (Solistry) web platform that bridges ancient foot astrology with modern computer vision telemetry. By analyzing bare foot sole contours, arch shapes, toe alignments, and planetary birth charts, AstroSole delivers personalized readings for career, health, relationships, and karmic path, while connecting seekers directly with expert astrologers.
+
+### 1.2 Value Proposition
+* **For Seekers:** Immediate, intuitive, and highly personalized astrological insights derived from the physical foundation of their body (the sole), combined with Vedic birth chart calculations.
+* **For Astrologers & Business:** High-converting lead generation funnel for deep-dive consultations, remedies, gemstones, and personalized cosmic footwear.
+
+---
+
+## 2. User Personas & Target Audience
+
+| Persona | Demographics & Profile | Needs & Pain Points | AstroSole Solution |
+| :--- | :--- | :--- | :--- |
+| **Cosmic Seeker (Primary)** | Age 22–45, interested in astrology, Tarot, palmistry, and wellness. | Wants instant, visually engaging predictions without complex birth time requirements. | 3-step foot scan with real-time AI visual telemetry and instant report. |
+| **Guidance Seeker (Secondary)** | Age 30–60, facing career transitions or relationship challenges. | Seeking authentic human astrologer consultation and actionable remedies. | One-click WhatsApp/Email booking with sacred astrologer consultation. |
+| **Astrologer / Partner** | Verified Vedic Astrologer / Solistry Expert. | Requires high-intent leads with pre-analyzed foot telemetry data. | Direct lead dispatch containing seeker birth info & sole telemetry coordinates. |
+
+---
+
+## 3. Core Features & Functional Requirements
+
+### 3.1 Landing & Onboarding (`Home.tsx`)
+* **Hero Banner with Dynamic Visuals:** High-impact cosmic visual theme, featuring animated background overlays and gold luxury aesthetics.
+* **Multilingual Support:** One-tap toggle between **English** and **Hindi** (`en` / `hi`).
+* **Daily Horoscope Carousel:** Interactive sign-by-sign horoscope scroll component (`HoroscopeCarousel.tsx`).
+* **Podomancy Educational Modal:** Informative guide explaining the ancient roots of solistry and bilateral foot symmetry.
+* **Lead Capture CTA:** Direct buttons for "Start Foot Reading", "Talk to Astrologer" (WhatsApp), and "Email Us".
+
+### 3.2 Foot Telemetry & Verification Scan (`Scan.tsx`)
+* **Image Capture / Upload:** Mobile camera integration with environment capture preference and client-side canvas image compression (down to 800px max dimension, ~80KB payload).
+* **AI Image Verification (`gemini.ts`):** Multi-model rotation (`gemini-2.5-flash-lite`, `gemini-3.1-flash-lite`, `gemini-2.5-flash`) verifying the upload is a bare human foot sole and strictly rejecting hands, animals, or objects.
+* **Interactive Alignment Overlay:** Visual guide box ensuring vertical sole alignment.
+* **Seeker Metadata Form:** Name, Email, Phone, Birth Date, Birth Time, Birth Place, and Gender collection.
+
+### 3.3 Solistry Calculation Engine (`podomancy.ts`)
+* **Foot Shape Classification:** Structural mapping across Roman (Earth), Egyptian (Water), Greek (Fire), and Square (Air) feet shapes.
+* **Line & Arch Telemetry:** Curve curvature, high arch vs. flat arch, and destiny line depth scoring.
+* **Bilateral Symmetry Mirroring:** Algorithmic mirror symmetry mapping active (right) vs. passive (left) foot dimensions.
+* **Deterministic Fallback:** Guarantees instantaneous reading generation even if cloud AI services experience rate limits or timeouts.
+
+### 3.4 Interactive Result & Report Page (`Result.tsx`)
+* **Constellation Foot Visualizer:** Interactive SVG foot constellation mapping energy nodes (Career, Health, Love, Fate).
+* **Detailed Predictions:** Multi-category insights for Career, Health, Love, Destiny, and Remedies.
+* **Printable / Sharable Report:** Downloadable PDF report and 1-click WhatsApp share string with custom URL branding.
+* **Razorpay Payment Gateway:** Integrated ₹11 payment trigger for unlocking premium reports or direct consultation passes.
+
+---
+
+## 4. End-to-End Business & Technology Workflow
+
+```mermaid
+flowchart TD
+    A[Seeker Arrives via Organic / Paid Ad] --> B[Home Page: Explores Daily Horoscope & Podomancy Guide]
+    B --> C[Click 'Start Foot Reading']
+    C --> D[Scan Page: Uploads Sole Photo + Enters Birth Chart Data]
+    D --> E{AI Telemetry Verification}
+    E -- Rejected (Hand/Object) --> F[Error Toast: Prompt to Upload Bare Foot Sole]
+    F --> D
+    E -- Verified (Human Sole) --> G[Client Compression & Gemini AI Analysis]
+    G --> H[Result Page: Interactive Constellation & Free Preview]
+    H --> I{Seeker Action}
+    I -- Unlock Premium Report --> J[Razorpay Payment API: ₹11]
+    J -- Payment Verified --> K[Full PDF Report + Lifetime Access]
+    I -- Seek Sacred Remedy --> L[WhatsApp / Email Lead Dispatch to Grand Astrologer]
+    L --> M[Astrologer Live Consultation & Custom Remedy Upsell]
+```
+
+---
+
+## 5. Technical & Business Codebase Audit: "What Is Missing"
+
+As CTO and Senior Product Manager, here is the comprehensive evaluation of architectural vulnerabilities, operational gaps, and uncaptured business opportunities:
+
+### 5.1 Critical Technical & Security Vulnerabilities 🚨
+
+1. **Client-Side Gemini API Key Exposure (`VITE_GEMINI_API_KEY`)**
+   * *Issue:* The Gemini API key is referenced directly in `src/lib/gemini.ts` using `import.meta.env.VITE_GEMINI_API_KEY`. Vite embeds `VITE_` variables into the public JavaScript bundle, exposing the secret API key to any user inspecting browser network requests.
+   * *Impact:* High risk of quota exhaustion, financial billing abuse, or API key revocation.
+   * *Required Solution:* Move Gemini AI processing inside Vercel Serverless Functions (`/api/analyze-sole.js`), keeping API keys strictly server-side.
+
+2. **Absence of Server Backend & Database Storage**
+   * *Issue:* The application currently operates purely in client-side memory (`localStorage` / React state). There is no database (such as PostgreSQL, Supabase, or MongoDB).
+   * *Impact:* If a user refreshes or switches devices, their generated report and purchase state are lost. Leads sent via WhatsApp are not persisted in a CRM.
+   * *Required Solution:* Integrate Supabase / Firebase for user account persistence, lead management, and historical report retrieval.
+
+3. **No User Authentication & Session Management**
+   * *Issue:* No signup/login mechanism (OAuth, Phone OTP, or Email/Password).
+   * *Impact:* Inability to send push notifications, re-engage seekers with daily transits, or manage subscription accounts.
+   * *Required Solution:* Add Supabase Auth or NextAuth with Phone OTP (via Twilio/Msg91) or Google OAuth.
+
+4. **Hardcoded Payment Values in API**
+   * *Issue:* In `api/create-order.js`, the price is hardcoded to `amount: 1100` (₹11.00).
+   * *Impact:* Inflexibility for tiered pricing (e.g., ₹11 Basic Report, ₹199 Premium Consultation, ₹999 Annual Subscription).
+   * *Required Solution:* Pass `packageId` or `amount` validated on the server side against a database product catalog.
+
+---
+
+### 5.2 Missing Business & Monetization Features 💼
+
+1. **Astrologer Lead & Partner Portal**
+   * *Current State:* Leads trigger raw `wa.me` links or `mailto:` links on the user's phone.
+   * *Missing:* An Astrologer Admin Dashboard where internal or partner astrologers can view incoming leads, inspect uploaded foot sole images, examine birth chart coordinates, update lead status (New, Contacted, Consulted), and record notes.
+
+2. **Recurring Subscription Model (SaaS/Astro-Pass)**
+   * *Current State:* One-time transaction model (₹11 report).
+   * *Missing:* Monthly/Annual "Cosmic Sole Pass" offering weekly transit updates, planetary remedies, lunar sole alignment dates, and discounted consultations.
+
+3. **Automated CRM & WhatsApp Business API Integration**
+   * *Current State:* Manual WhatsApp messaging via client device.
+   * *Missing:* Automated WhatsApp messages via WhatsApp Business API (Interakt / Wati / Twilio) sending instant PDF reports, automated consultation reminders, and 7-day astrological check-ins.
+
+4. **Affiliate & Physical Product Upsells**
+   * *Current State:* Digital report output only.
+   * *Missing:* E-commerce recommendations for physical remedies (gemstones, copper yantras, custom astrological footwear/soles aligned with foot shape).
+
+5. **Analytics & Funnel Drop-off Tracking**
+   * *Current State:* Basic `@vercel/analytics` page view tracking.
+   * *Missing:* Granular funnel events (e.g., `scan_started`, `image_rejected`, `result_viewed`, `checkout_initiated`, `payment_completed`) to optimize marketing conversion rates.
+
+---
+
+## 6. Implementation Roadmap for Next Sprint
+
+```mermaid
+gantt
+    title AstroSole Feature & Architecture Roadmap
+    dateFormat  YYYY-MM-DD
+    section Security & Backend
+    Migrate Gemini to Serverless API     :active, p1, 2026-08-25, 3d
+    Integrate Supabase Auth & Database   :p2, 2026-08-28, 5d
+    section Product & Business
+    Astrologer Lead Portal               :p3, 2026-09-02, 4d
+    WhatsApp Business API Automation     :p4, 2026-09-06, 3d
+    Tiered Monetization & Subscriptions   :p5, 2026-09-09, 4d
+```
+
+---
+*End of PRD Document.*
