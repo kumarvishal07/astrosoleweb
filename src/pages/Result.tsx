@@ -501,7 +501,7 @@ export default function Result() {
     return <Navigate to="/" replace />;
   }
 
-  const { name = 'User', language: stateLanguage = 'en' } = location.state || {};
+  const { name = 'User', email = '', mobile = '', language: stateLanguage = 'en' } = location.state || {};
   
   const [reading, setReading] = useState<ReturnType<typeof generateDetailedReading> | null>(null);
   const [language, setLanguage] = useState<'en' | 'hi'>(stateLanguage);
@@ -550,76 +550,73 @@ export default function Result() {
     setIsPaying(true);
     const keyId = import.meta.env.VITE_RAZORPAY_KEY_ID || "";
 
-    if (!keyId) {
-      alert("Razorpay Key ID is missing! Please configure VITE_RAZORPAY_KEY_ID in your .env file to run payments.");
-      setIsPaying(false);
-      return;
-    }
-
     try {
-      // 1. Try to create Order ID via backend API
-      let orderId = "";
-      try {
-        const response = await fetch('/api/create-order', {
-          method: 'POST',
-        });
-        if (response.ok) {
-          const order = await response.json();
-          orderId = order.id;
-        }
-      } catch (backendError) {
-        console.warn("Backend order creation failed, falling back to client-side checkout:", backendError);
+      // 1. Create Order ID via backend API
+      const response = await fetch('/api/create-order', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          mobile
+        })
+      });
+
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({}));
+        throw new Error(errData.error || `Server order creation failed with status ${response.status}`);
+      }
+
+      const order = await response.json();
+      const activeKeyId = order.keyId || keyId;
+
+      if (!activeKeyId) {
+        throw new Error("Razorpay Key ID is not configured. Please set VITE_RAZORPAY_KEY_ID or RAZORPAY_KEY_ID.");
       }
 
       const options = {
-        key: keyId,
-        amount: 1100, // ₹11.00 (1100 paise)
-        currency: "INR",
+        key: activeKeyId,
+        amount: order.amount || 1100, // ₹11.00 in paise
+        currency: order.currency || "INR",
         name: "AstroSole",
         description: "Unlock Premium AstroSole Astrological Report",
-        ...(orderId ? { order_id: orderId } : {}), // Bind order_id if backend succeeded
-        handler: async function (paymentResponse: { razorpay_order_id?: string; razorpay_payment_id: string; razorpay_signature?: string }) {
+        order_id: order.id,
+        handler: async function (paymentResponse: { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string }) {
           setIsPaying(true);
-          
-          // If backend generated the order, verify signature on backend
-          if (orderId && paymentResponse.razorpay_signature) {
-            try {
-              const verifyResponse = await fetch('/api/verify-payment', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                  razorpay_order_id: paymentResponse.razorpay_order_id,
-                  razorpay_payment_id: paymentResponse.razorpay_payment_id,
-                  razorpay_signature: paymentResponse.razorpay_signature,
-                }),
-              });
+          try {
+            const verifyResponse = await fetch('/api/verify-payment', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                razorpay_order_id: paymentResponse.razorpay_order_id,
+                razorpay_payment_id: paymentResponse.razorpay_payment_id,
+                razorpay_signature: paymentResponse.razorpay_signature,
+              }),
+            });
 
-              const verifyResult = await verifyResponse.json();
-              if (verifyResult.success) {
-                setIsUnlocked(true);
-                setShowPaymentModal(false);
-              } else {
-                alert(verifyResult.message || "Payment verification failed.");
-              }
-            } catch (verifyError) {
-              console.error("Verification failed:", verifyError);
-              alert("An error occurred during payment verification.");
-            } finally {
-              setIsPaying(false);
+            const verifyResult = await verifyResponse.json();
+            if (verifyResponse.ok && verifyResult.success) {
+              setIsUnlocked(true);
+              setShowPaymentModal(false);
+            } else {
+              alert(verifyResult.message || "Payment verification failed. Please contact support.");
             }
-          } else {
-            // Client-side checkout fallback (for local test/demo environments)
-            setIsUnlocked(true);
-            setShowPaymentModal(false);
+          } catch (verifyError: unknown) {
+            console.error("Verification error:", verifyError);
+            const err = verifyError instanceof Error ? verifyError.message : "Network error during verification";
+            alert("Payment verification failed: " + err);
+          } finally {
             setIsPaying(false);
           }
         },
         prefill: {
           name: name,
-          email: "user@astrosole.in",
-          contact: "9999999999"
+          email: email || "seeker@astrosole.in",
+          contact: mobile || "9999999999"
         },
         theme: {
           color: "#A855F7",
@@ -633,10 +630,17 @@ export default function Result() {
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const rzp = new (window as any).Razorpay(options);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      rzp.on('payment.failed', function (resp: any) {
+        console.error("Razorpay payment failed:", resp?.error);
+        alert(resp?.error?.description || "Payment failed. Please try again.");
+        setIsPaying(false);
+      });
       rzp.open();
-    } catch (error) {
-      console.error("Payment error:", error);
-      alert("Unable to initiate payment. Please try again.");
+    } catch (error: unknown) {
+      console.error("Payment initiation error:", error);
+      const msg = error instanceof Error ? error.message : "Unable to initiate payment.";
+      alert(msg);
       setIsPaying(false);
     }
   };
@@ -940,14 +944,14 @@ export default function Result() {
             </p>
 
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'baseline', gap: '6px', marginBottom: '24px' }}>
-              <span style={{ fontSize: '32px', fontWeight: 'bold', color: 'var(--accent)' }}>₹0</span>
+              <span style={{ fontSize: '32px', fontWeight: 'bold', color: 'var(--accent)' }}>₹11</span>
               <span style={{ fontSize: '14px', color: 'var(--text-secondary)', textDecoration: 'line-through' }}>₹499</span>
-              <span style={{ fontSize: '12px', color: 'yellowgreen', fontWeight: 'bold' }}>(100% OFF)</span>
+              <span style={{ fontSize: '12px', color: 'yellowgreen', fontWeight: 'bold' }}>(98% OFF)</span>
             </div>
 
             <button 
               className="btn" 
-              onClick={() => setIsUnlocked(true)}
+              onClick={() => setShowPaymentModal(true)}
               style={{ 
                 width: '100%', 
                 maxWidth: '300px', 
@@ -962,7 +966,7 @@ export default function Result() {
                 display: 'block'
               }}
             >
-              {language === 'hi' ? "पूर्ण रिपोर्ट अनलॉक करें" : "Unlock Complete Report"}
+              {language === 'hi' ? "पूर्ण रिपोर्ट अनलॉक करें (₹11)" : "Unlock Complete Report (₹11)"}
             </button>
           </div>
 
@@ -1683,18 +1687,18 @@ export default function Result() {
 
 
 
-      {/* Payment simulation gateway modal */}
+      {/* Payment Gateway Modal */}
       {showPaymentModal && (
         <div className="modal-overlay" onClick={() => setShowPaymentModal(false)}>
           <div className="modal-card" style={{ maxWidth: '400px', textAlign: 'center' }} onClick={e => e.stopPropagation()}>
             <Sparkles color="var(--accent)" size={36} style={{ margin: '0 auto 12px' }} />
             <h3 style={{ fontFamily: 'Cinzel', fontSize: '18px', color: 'var(--accent)', marginBottom: '16px' }}>
-              {language === 'hi' ? "सुरक्षित भुगतान गेटवे" : "Secure Payment Gateway"}
+              {language === 'hi' ? "सुरक्षित रेज़रपे गेटवे" : "Razorpay Secure Gateway"}
             </h3>
             <p style={{ fontSize: '13.5px', color: 'var(--text-secondary)', marginBottom: '20px', lineHeight: '1.4' }}>
               {language === 'hi' 
-                ? "यह एक डेमो भुगतान अनुकरण (payment simulation) है। अपनी पूर्ण ज्योतिषीय रिपोर्ट तक पहुंचने के लिए नीचे 'भुगतान करें' पर क्लिक करें।"
-                : "This is a simulated payment gateway. Click 'Proceed to Pay' to securely unlock your full astrological report."}
+                ? "256-बिट एन्क्रिप्शन के साथ सुरक्षित भुगतान। अपनी संपूर्ण विस्तृत ज्योतिषीय रिपोर्ट को अनलॉक करने के लिए 'भुगतान करें' पर क्लिक करें।"
+                : "256-bit encrypted secure payment. Click 'Proceed to Pay' to unlock your full, personalized astrological report."}
             </p>
             
             <div style={{ backgroundColor: 'rgba(255,255,255,0.05)', padding: '16px', borderRadius: '10px', marginBottom: '20px', border: '1px solid rgba(224,192,151,0.2)' }}>
